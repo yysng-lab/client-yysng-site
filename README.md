@@ -1,43 +1,17 @@
-# Astro Starter Kit: Minimal
+## 🧊 Architecture Contract
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This project conforms to:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+**AI_EDIT_ENGINE_ARCH_V2_LOCKED**  
+Date: 2025-12-31  
+Owner: YY  
 
-## 🚀 Project Structure
+### Core Rules
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- All code shipped to Cloudflare Workers must be **edge-safe**
+- Node APIs (`fs`, `path`, etc) must never appear in production bundles
+- Node logic is allowed only via **dynamic import** and only when:
+  `process.env.NODE_ENV === "development"`
+- No static Node imports at module scope
+- Runtime selection happens **inside request handlers only**
+- This contract must not be violated
