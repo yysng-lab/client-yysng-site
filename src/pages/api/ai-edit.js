@@ -1,12 +1,21 @@
 import { handleEdit } from "@yysng/ai-edit-engine/server";
-import { initContentRoot } from "../../server/contentRoot.init.js";
-import { updateContent } from "@yysng/astro-boilerplate";
+import { updateContentAdapter } from "../../server/updateContent.local.js";
 
-export async function POST({ request }) {
-  initContentRoot();
+export async function POST(context) {
+  const body = await context.request.json();
 
-  return await handleEdit(request, {
-    UPDATE_CONTENT: updateContent,
-    ...import.meta.env
+  const adapted = body.intent
+    ? { section: body.intent.target, content: body.intent.payload }
+    : body;
+
+  const req = new Request(context.request.url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(adapted),
+  });
+
+  return handleEdit(req, {
+    UPDATE_CONTENT: updateContentAdapter,
+    ...import.meta.env,
   });
 }

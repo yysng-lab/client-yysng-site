@@ -1,5 +1,8 @@
 {
-  "title": "EzyCoaching",
-  "subtitle": "Coaching for leaders who need real behaviour change.",
-  "cta": { "label": "Book a Call", "href": "/contact" }
+  "title": "Hero title from AI Edit",
+  "subtitle": "Subtitle required by schema",
+  "cta": {
+    "label": "Book a Call",
+    "href": "/contact"
+  }
 }
