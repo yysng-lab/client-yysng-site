@@ -1,22 +1,17 @@
 ---
 export const prerender = false;
 
-let hero;
-let cta;
-
-// In local dev only: set content root for filesystem reads
-if (import.meta.env.DEV) {
-  const mod = await import(/* @vite-ignore */ "../server/contentRoot.init.node.js");
-  mod.initContentRootNode();
-}
+import heroFile from "../content/hero.json";
+import ctaFile from "../content/cta.json";
 
 const { loadContent } = await import("@yysng/astro-boilerplate");
-
-// Cloudflare Pages runtime env (contains CONTENT_KV in production)
 const env = Astro.locals?.runtime?.env ?? {};
 
-hero = await loadContent("hero", env);
-cta  = await loadContent("cta", env);
+let hero = heroFile;
+let cta = ctaFile;
+
+try { hero = await loadContent("hero", env); } catch {}
+try { cta  = await loadContent("cta", env); } catch {}
 ---
 
 <main class="max-w-4xl mx-auto p-8">
