@@ -1,17 +1,27 @@
 ---
 export const prerender = false;
 
-import heroFile from "../content/hero.json";
-import ctaFile from "../content/cta.json";
+import heroDefault from "../content/hero.json";
+import ctaDefault from "../content/cta.json";
 
-const { loadContent } = await import("@yysng/astro-boilerplate");
 const env = Astro.locals?.runtime?.env ?? {};
 
-let hero = heroFile;
-let cta = ctaFile;
+async function readKVOrDefault(key, fallback) {
+  // If KV not bound, fallback
+  if (!env.CONTENT_KV) return fallback;
 
-try { hero = await loadContent("hero", env); } catch {}
-try { cta  = await loadContent("cta", env); } catch {}
+  const raw = await env.CONTENT_KV.get(`${key}.json`);
+  if (!raw) return fallback;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+}
+
+const hero = await readKVOrDefault("hero", heroDefault);
+const cta  = await readKVOrDefault("cta", ctaDefault);
 ---
 
 <main class="max-w-4xl mx-auto p-8">
