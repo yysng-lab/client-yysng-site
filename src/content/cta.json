@@ -1,5 +1,8 @@
 {
-  "heading": "Ready to improve performance?",
-  "description": "Let’s map the behaviour shift your team actually needs.",
-  "button": { "label": "Talk to Us", "href": "/contact" }
+  "heading": "Test CTA",
+  "description": "Optional",
+  "button": {
+    "label": "Apply Now",
+    "href": "/apply"
+  }
 }

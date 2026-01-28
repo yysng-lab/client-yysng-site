@@ -58,7 +58,10 @@ export async function updateContentAdapter(section, incoming, env = {}) {
 
     // get existing
     const raw = await env.CONTENT_KV.get(key);
-    const existing = raw ? JSON.parse(raw) : {};
+    let existing = {};
+    if (raw) {
+      try { existing = JSON.parse(raw); } catch { existing = {}; }
+    }
 
     const merged = mergeDefined(existing, incoming);
     validate(section, merged);

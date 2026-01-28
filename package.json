@@ -9,8 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@yysng/ai-edit-engine": "^2.3.1",
-    "@yysng/astro-boilerplate": "^1.1.36",
+    "@yysng/ai-edit-engine": "2.3.1",
+    "@yysng/astro-boilerplate": "1.1.36",
     "astro": "^5.16.6",
     "dotenv": "^17.2.3",
     "openai": "^6.15.0"
