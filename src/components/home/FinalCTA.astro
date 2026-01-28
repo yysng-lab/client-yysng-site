@@ -1,0 +1,38 @@
+---
+const { data } = Astro.props;
+
+// Optional: allow you to pass a variant later without changing structure
+const kicker = data.kicker ?? "READY TO TRANSFORM YOUR SALES PERFORMANCE?";
+---
+
+<section class="section bg-[color:var(--surface-2)]">
+  <div class="container">
+    <div class="mx-auto max-w-3xl text-center">
+      <p
+        class="text-[11px] tracking-[0.22em] uppercase font-semibold text-[color:var(--accent)]"
+      >
+        {kicker}
+      </p>
+
+      <h2 class="mt-4 text-balance text-[color:var(--primary)]">
+        {data.heading}
+      </h2>
+
+      {data.description && (
+        <p class="mt-5 text-[18px] leading-relaxed text-[color:var(--muted)]">
+          {data.description}
+        </p>
+      )}
+
+      <div class="mt-8 flex justify-center">
+        <a
+          class="btn-primary inline-flex items-center gap-2 shadow-sm"
+          href={data.button?.href}
+        >
+          <span>{data.button?.label}</span>
+          <span aria-hidden="true" class="text-lg leading-none">›</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

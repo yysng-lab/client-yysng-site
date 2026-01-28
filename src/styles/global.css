@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* ===============================
+   BASE TYPOGRAPHY + DEFAULTS
+================================ */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    @apply antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* Coaching-style font pairing:
+     - Body: system sans (clean, fast)
+     - Headings: a subtle "display" feel via weight/spacing (no external font needed)
+     If you later want: add "Fraunces" or "Playfair Display" for headings. */
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-weight: 650;
+    font-size: clamp(2.25rem, 4.8vw, 3.75rem);
+    line-height: 1.05;
+  }
+
+  h2 {
+    font-weight: 650;
+    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+    line-height: 1.12;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1.25;
+  }
+
+  p {
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+    /* Links look brand-consistent */
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 4px;
+  }
+  /* Make default borders feel softer everywhere */
+  * {
+    border-color: var(--border);
+  }
+}
+
+/* ===============================
+   LAYOUT HELPERS + UI TOKENS
+================================ */
+@layer components {
+  .container {
+    @apply max-w-6xl mx-auto px-6;
+  }
+
+  .section {
+    @apply py-20;
+  }
+
+  .section-tight {
+    @apply py-12;
+  }
+
+  /* Softer "card" style */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Better default button */
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-contrast);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.4rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-primary:hover { opacity: 0.92; }
+
+  /* Reduce “black border everywhere” from generic Tailwind borders */
+  .border,
+  .border-t,
+  .border-b,
+  .border-l,
+  .border-r {
+    border-color: var(--border);
+  }
+
+  /* Make bg-white utilities still feel ok when used */
+  .bg-white {
+    background: var(--surface);
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-contrast);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.4rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(0.95);
+  }
+}
