@@ -15,8 +15,8 @@ if (import.meta.env.DEV) {
   currentHero = await loadContent("hero", env);
   currentCta  = await loadContent("cta", env);
 } else {
-  currentHero = (await import("../content/hero.json")).default;
-  currentCta  = (await import("../content/cta.json")).default;
+  currentHero = (await import("../data/hero.json")).default;
+  currentCta  = (await import("../data/cta.json")).default;
 }
 
 ---
