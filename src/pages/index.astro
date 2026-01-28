@@ -4,22 +4,29 @@ export const prerender = false;
 let hero;
 let cta;
 
+// In local dev only: set content root for filesystem reads
 if (import.meta.env.DEV) {
-  const { loadContent } = await import("@yysng/astro-boilerplate");
-  const env = Astro.locals?.runtime?.env ?? {};
-  hero = await loadContent("hero", env);
-  cta  = await loadContent("cta", env);
-} else {
-  hero = (await import("../content/hero.json")).default;
-  cta  = (await import("../content/cta.json")).default;
+  const mod = await import(/* @vite-ignore */ "../server/contentRoot.init.node.js");
+  mod.initContentRootNode();
 }
+
+const { loadContent } = await import("@yysng/astro-boilerplate");
+
+// Cloudflare Pages runtime env (contains CONTENT_KV in production)
+const env = Astro.locals?.runtime?.env ?? {};
+
+hero = await loadContent("hero", env);
+cta  = await loadContent("cta", env);
 ---
 
 <main class="max-w-4xl mx-auto p-8">
   <section class="py-10">
     <h1 class="text-4xl font-bold">{hero.title}</h1>
     <p class="mt-3 text-lg text-gray-600">{hero.subtitle}</p>
-    <a class="inline-block mt-6 px-4 py-2 rounded bg-black text-white" href={hero.cta?.href}>
+    <a
+      class="inline-block mt-6 px-4 py-2 rounded bg-black text-white"
+      href={hero.cta?.href}
+    >
       {hero.cta?.label}
     </a>
   </section>
@@ -27,7 +34,10 @@ if (import.meta.env.DEV) {
   <section class="py-10 border-t">
     <h2 class="text-2xl font-semibold">{cta.heading}</h2>
     <p class="mt-2 text-gray-600">{cta.description}</p>
-    <a class="inline-block mt-5 px-4 py-2 rounded border" href={cta.button?.href}>
+    <a
+      class="inline-block mt-5 px-4 py-2 rounded border"
+      href={cta.button?.href}
+    >
       {cta.button?.label}
     </a>
   </section>
