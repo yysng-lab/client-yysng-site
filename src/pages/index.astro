@@ -117,7 +117,7 @@ const homepageJsonLd = [
     <!-- HERO -->
     <Hero data={hero} />
 
-    =
+
 <!-- SECTION 2 — PROBLEM ENTRY -->
 <section class="section">
   <div class="container">
@@ -144,13 +144,22 @@ const homepageJsonLd = [
       <div class="split-visual">
         <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
           <div class="aspect-[16/11]">
-            <img
-              src="/images/home-sections/section-2-2.jpg"
-              alt="Leadership hesitation in everyday decisions"
-              class="h-full w-full object-cover"
-              loading="lazy"
-              decoding="async"
-            />
+        <img
+          src="/images/home-sections/gen/section-2-2-960.webp"
+          srcset="
+            /images/home-sections/gen/section-2-2-640.webp 640w,
+            /images/home-sections/gen/section-2-2-960.webp 960w,
+            /images/home-sections/gen/section-2-2-1280.webp 1280w,
+            /images/home-sections/gen/section-2-2-1920.webp 1920w
+          "
+          sizes="(min-width: 1024px) 58vw, 100vw"
+          width="1280"
+          height="880"
+          alt="Leadership hesitation in everyday decisions"
+          class="h-full w-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
           </div>
         </div>
       </div>
@@ -186,13 +195,21 @@ const homepageJsonLd = [
         <!-- Background image -->
         <div class="h-[380px] md:h-[460px]">
           <img
-            src="/images/home-sections/section-4-2.jpg"
+            src="/images/home-sections/gen/section-4-2-1280.webp"
+            srcset="
+              /images/home-sections/gen/section-4-2-640.webp 640w,
+              /images/home-sections/gen/section-4-2-960.webp 960w,
+              /images/home-sections/gen/section-4-2-1280.webp 1280w,
+              /images/home-sections/gen/section-4-2-1920.webp 1920w
+            "
+            sizes="(min-width: 1024px) 896px, 100vw"
+            width="1280"
+            height="736"
             alt="Quiet moments after meetings where decisions stall"
             class="h-full w-full object-cover"
             loading="lazy"
             decoding="async"
           />
-        </div>
 
         <!-- Dark overlay for readability -->
         <div class="absolute inset-0 bg-black/25"></div>
@@ -277,27 +294,27 @@ const homepageJsonLd = [
       {
         name: 'Malcolm, Founder',
         quote: 'To identify strengths quicker and leverage on them to excel.',
-        img: '/images/testimonials/malcolm.png'
+        img: '/images/testimonials/malcolm.webp'
       },
       {
         name: 'Keith, Founder',
         quote: 'The simple shift completely changed my approach. It helped me prioritize better and gave me a clear path forward.',
-        img: '/images/testimonials/keith.png'
+        img: '/images/testimonials/keith.webp'
       },
       {
         name: 'Wan Ling, Financial Services COT',
         quote: 'Mid-year fatigue brought uncertainty. The sessions gave me clarity to realign my focus and priorities.',
-        img: '/images/testimonials/wanling.png'
+        img: '/images/testimonials/wanling.webp'
       },
       {
         name: 'Caroline Teng, Financial Services COT',
         quote: 'Starting a new path after 31 years wasn’t easy — the coaching made a real difference',
-        img: '/images/testimonials/caroline.png'
+        img: '/images/testimonials/caroline.webp'
       },
       {
         name: 'Benson Ng, Financial Services COT',
         quote: 'She guided me to explore the values and beliefs that were holding me back from making decisive moves',
-        img: '/images/testimonials/benson.png'
+        img: '/images/testimonials/benson.webp'
       },
     ]
   }"
@@ -331,8 +348,12 @@ const homepageJsonLd = [
               <img
                 :src="t.img"
                 :alt="t.name"
-                loading="lazy"
+                width="240"
+                height="240"
                 decoding="async"
+                :loading="active === i ? 'eager' : 'lazy'"
+                :fetchpriority="active === i ? 'high' : 'auto'"
+                sizes="(min-width: 1024px) 96px, 56px"
                 class="rounded-full object-cover transition-all duration-300 ease-out"
                 :class="active === i
                   ? 'h-24 w-24 opacity-100'

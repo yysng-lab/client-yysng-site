@@ -23,3 +23,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .env.local
+
+
+public/images/home-sections/src/
