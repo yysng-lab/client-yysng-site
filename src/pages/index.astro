@@ -112,6 +112,16 @@ const homepageJsonLd = [
   keywords={homepageSEO.keywords}
   jsonLd={homepageJsonLd}
 >
+<Fragment slot="head">
+    <link
+      rel="preload"
+      as="image"
+      href="/images/hero/hero-bg-1.webp"
+      type="image/webp"
+      fetchpriority="high"
+    />
+  </Fragment>
+
   <main>
 
     <!-- HERO -->

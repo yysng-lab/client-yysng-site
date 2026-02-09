@@ -9,6 +9,10 @@ export default defineConfig({
     mode: "advanced",
   }),
 
+   build: {
+    inlineStylesheets: "auto",
+  },
+
   image: {
     service: {
       entrypoint: "@astrojs/image/services/compile",
