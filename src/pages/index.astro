@@ -6,14 +6,8 @@ import Base from "../layouts/Base.astro";
 import heroDefault from "../data/hero.json";
 import ctaDefault from "../data/cta.json";
 
-import Header from "../components/Header.astro";
 import Hero from "../components/home/Hero.astro";
-import UnlimitedSupport from "../components/home/UnlimitedSupport.astro";
-import WhyChoose from "../components/home/WhyChoose.astro";
-import Testimonials from "../components/home/Testimonials.astro";
-import ImageBand from "../components/home/ImageBand.astro";
 import FinalCTA from "../components/home/FinalCTA.astro";
-import Footer from "../components/Footer.astro";
 
 type HeroContent = typeof heroDefault;
 type CtaContent = typeof ctaDefault;
@@ -29,19 +23,344 @@ async function readKVOrDefault<T>(key: string, fallback: T): Promise<T> {
 
 const hero = await readKVOrDefault<HeroContent>("hero", heroDefault);
 const cta  = await readKVOrDefault<CtaContent>("cta", ctaDefault);
+
+const homepageSEO = {
+  title: "Leadership Coaching for Decision Clarity | EzyCoaching",
+  description:
+    "Coaching for leaders when decisions keep getting delayed. Clear the real friction in real time—so you move, not loop. Book a confidential conversation.",
+  canonical: "https://ezycoaching.com/",
+  ogTitle: "Leadership Coaching for Decision Clarity | EzyCoaching",
+  ogDescription:
+    "Coaching for leaders when decisions keep getting delayed. Clear the real friction in real time—so you move, not loop. Book a confidential conversation.",
+  ogType: "website",
+  // optional (only include if you have it):
+  // ogImage: "/images/og-default.png",
+  keywords: "leadership coaching for decision clarity"
+};
+
+const homepageJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "EzyCoaching",
+    "url": "https://ezycoaching.com/",
+    "email": "breakthrough@ezycoaching.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "60 Paya Lebar Road, #06-28, Paya Lebar Square",
+      "addressLocality": "Singapore",
+      "postalCode": "409051",
+      "addressCountry": "SG"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "EzyCoaching",
+    "url": "https://ezycoaching.com/",
+    "inLanguage": "en"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the first conversation like?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A focused discussion about one real leadership situation you’re currently navigating. It’s a way to test whether coaching is the right lever."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this a sales pitch?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. There’s no obligation. If coaching fits, we’ll suggest next steps. If it doesn’t, we’ll tell you directly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What if I don’t have a specific situation in mind?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If nothing specific comes to mind, it may not be the right time yet. This works best when there’s a decision, dynamic, or recurring friction you keep returning to."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "When do leaders usually reach out?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Most leaders reach out when something keeps resurfacing and they’ve stopped ignoring it—often when pressure rises and decisions start looping."
+        }
+      }
+    ]
+  }
+];
+
 ---
 
-<Base>
-  <Header />
-
+<Base
+  title={homepageSEO.title}
+  description={homepageSEO.description}
+  canonical={homepageSEO.canonical}
+  ogTitle={homepageSEO.ogTitle}
+  ogDescription={homepageSEO.ogDescription}
+  ogType={homepageSEO.ogType}
+  keywords={homepageSEO.keywords}
+  jsonLd={homepageJsonLd}
+>
   <main>
+
+    <!-- HERO -->
     <Hero data={hero} />
-    <UnlimitedSupport />
-    <WhyChoose />
-    <Testimonials />
-    <ImageBand />
+
+    =
+<!-- SECTION 2 — PROBLEM ENTRY -->
+<section class="section">
+  <div class="container">
+    <div class="split">
+      <!-- Text -->
+      <div class="split-text">
+      
+
+        <h2
+          data-reveal-item
+          class="mt-4 text-[color:var(--primary)] text-balance"
+        >
+          You’re not failing.<br />You’re hesitating.
+        </h2>
+
+        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-md">
+          It doesn’t look dramatic.<br />
+          It shows up as waiting, double-checking,<br />
+          or pushing the decision to next week.
+        </p>
+      </div>
+
+      <!-- Visual -->
+      <div class="split-visual">
+        <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
+          <div class="aspect-[16/11]">
+            <img
+              src="/images/home-sections/section-2-2.jpg"
+              alt="Leadership hesitation in everyday decisions"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 3 — PATTERN RECOGNITION -->
+<section class="section">
+  <div class="container">
+    <div class="text-col">
+      <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
+        Most leadership friction doesn’t look like mistakes.<br />
+        It looks like delay.
+      </h2>
+
+      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-2xl">
+        Decisions loop.<br />
+        Conversations get postponed.<br />
+        Momentum slows without anyone calling it out.
+      </p>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 4 — CONTEXT GAP -->
+    
+<!-- SECTION 4 — CONTEXT GAP -->
+<section class="section">
+  <div class="container">
+    <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
+      <div class="relative">
+        <!-- Background image -->
+        <div class="h-[380px] md:h-[460px]">
+          <img
+            src="/images/home-sections/section-4-2.jpg"
+            alt="Quiet moments after meetings where decisions stall"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Dark overlay for readability -->
+        <div class="absolute inset-0 bg-black/25"></div>
+
+        <!-- Text overlay -->
+        <div class="absolute inset-0 flex items-center">
+          <!-- same horizontal rhythm as container -->
+          <div class="w-full px-6 md:px-12">
+            <!-- same text column width as other sections -->
+            <div class="text-col max-w-4xl">
+             
+
+              <h2
+                data-reveal-item
+                class="mt-4 text-white text-balance"
+              >
+                The hardest moments happen after the meeting ends.
+              </h2>
+
+              <p class="mt-6 text-[18px] leading-relaxed text-white/80 max-w-2xl">
+                After the advice.<br />
+                Before the decision.<br />
+                When no one is watching.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 — WHY SUPPORT DIDN’T STICK (compressed / denser) -->
+<section class="py-16 md:py-20">
+  <div class="container">
+    <!-- tighter column + tighter rhythm -->
+    <div class="max-w-[44ch]">
+      <h2
+        data-reveal-item
+        class="text-[color:var(--primary)] text-balance leading-tight"
+      >
+        Advice makes sense.<br />Then Monday happens.
+      </h2>
+
+      <p
+        class="mt-4 text-[17px] leading-snug text-[color:var(--muted)]"
+      >
+        Not because people forgot.<br />
+        Because real pressure didn’t look like the example.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6 — POSITIONING (expanded / more open, no image) -->
+<section class="py-24 md:py-32">
+  <div class="container">
+    <!-- wider column + more breathing room -->
+    <div class="max-w-3xl">
+      <h2
+        data-reveal-item
+        class="text-[color:var(--primary)] text-balance leading-tight"
+      >
+        We work with leaders inside real decisions.
+      </h2>
+
+      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)]">
+        Not in workshops.<br />
+        Not weeks later.<br />
+        When the moment actually shows up.
+      </p>
+    </div>
+  </div>
+</section>
+
+ <!-- SECTION 7 — TESTIMONIALS (editorial split) -->
+<section
+  class="py-24 md:py-32"
+  x-data="{
+    active: 0,
+    testimonials: [
+      {
+        name: 'Malcolm, Founder',
+        quote: 'To identify strengths quicker and leverage on them to excel.',
+        img: '/images/testimonials/malcolm.png'
+      },
+      {
+        name: 'Keith, Founder',
+        quote: 'The simple shift completely changed my approach. It helped me prioritize better and gave me a clear path forward.',
+        img: '/images/testimonials/keith.png'
+      },
+      {
+        name: 'Wan Ling, Financial Services COT',
+        quote: 'Mid-year fatigue brought uncertainty. The sessions gave me clarity to realign my focus and priorities.',
+        img: '/images/testimonials/wanling.png'
+      },
+      {
+        name: 'Caroline Teng, Financial Services COT',
+        quote: 'Starting a new path after 31 years wasn’t easy — the coaching made a real difference',
+        img: '/images/testimonials/caroline.png'
+      },
+      {
+        name: 'Benson Ng, Financial Services COT',
+        quote: 'She guided me to explore the values and beliefs that were holding me back from making decisive moves',
+        img: '/images/testimonials/benson.png'
+      },
+    ]
+  }"
+>
+  <div class="container">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+      <!-- LEFT: framing -->
+      <div class="lg:col-span-4">
+        <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
+          What changes when hesitation drops.
+        </h2>
+
+        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]">
+          Clients don’t talk about motivation.<br />
+          They talk about movement.
+        </p>
+      </div>
+
+      <!-- RIGHT: testimonials -->
+      <div class="lg:col-span-8">
+        <!-- avatars -->
+        <div class="flex items-center gap-6">
+          <template x-for="(t,i) in testimonials" :key="i">
+            <button
+              type="button"
+              @click="active = i"
+              @mouseenter="matchMedia('(hover:hover)').matches && (active = i)"
+              class="focus:outline-none"
+              :aria-label="`View testimonial from ${t.name}`"
+            >
+              <img
+                :src="t.img"
+                :alt="t.name"
+                loading="lazy"
+                decoding="async"
+                class="rounded-full object-cover transition-all duration-300 ease-out"
+                :class="active === i
+                  ? 'h-24 w-24 opacity-100'
+                  : 'h-14 w-14 opacity-50'"
+              />
+            </button>
+          </template>
+        </div>
+
+        <!-- quote -->
+        <div class="mt-10 max-w-2xl">
+          <p
+            class="text-[22px] leading-snug text-[color:var(--text)]"
+            x-text="testimonials[active].quote"
+          ></p>
+
+          <p
+            class="mt-4 text-sm text-[color:var(--muted)]"
+            x-text="testimonials[active].name"
+          ></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- FINAL CTA -->
     <FinalCTA data={cta} />
   </main>
 
-  <Footer />
 </Base>

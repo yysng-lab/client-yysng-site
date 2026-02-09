@@ -12,14 +12,10 @@ let currentHero;
 let currentCta;
 
 if (import.meta.env.DEV) {
-  // 👇 resolve to /src/data
   const contentRoot = fileURLToPath(new URL("../data/", import.meta.url));
-
-  // 🔑 THIS IS THE MISSING STEP
   setContentRoot(contentRoot);
 
   const { loadContent } = await import("@yysng/astro-boilerplate");
-
   currentHero = await loadContent("hero");
   currentCta  = await loadContent("cta");
 } else {
@@ -120,6 +116,18 @@ const syncCtaForm = ()=>{
   $("editCtaBtnHref").value = ctaDraft.button?.href||"";
 };
 
+function markHeroDirty() {
+  $("applyHero").disabled = false;
+  $("resetHero").disabled = false;
+  status.textContent = "Hero edited (not saved)";
+}
+
+function markCtaDirty() {
+  $("applyCta").disabled = false;
+  $("resetCta").disabled = false;
+  status.textContent = "CTA edited (not saved)";
+}
+
 renderHero(heroDraft);
 renderCta(ctaDraft);
 syncHeroForm();
@@ -138,35 +146,30 @@ $("genHero").onclick = async()=>{
   if(!text) return status.textContent="Enter an instruction";
   heroDraft = await post("/api/ai-generate",{section:"hero",instruction:text});
   renderHero(heroDraft); syncHeroForm();
-  $("applyHero").disabled=false; $("resetHero").disabled=false;
+  markHeroDirty();
   status.textContent="Hero ready";
 };
 
 $("applyHero").onclick = async () => {
   $("applyHero").disabled = true;
   status.textContent = "Saving hero...";
-
   try {
     const res = await post("/api/ai-edit", { section: "hero", content: heroDraft });
-
     liveHero = structuredClone(res.result);
     heroDraft = structuredClone(liveHero);
-
-    renderHero(heroDraft);
-    syncHeroForm();
-
+    renderHero(heroDraft); syncHeroForm();
     status.textContent = "Hero saved";
   } catch (err) {
     console.error(err);
     status.textContent = "Error saving hero";
-  } finally {
-    $("applyHero").disabled = false;
   }
 };
 
 $("resetHero").onclick = ()=>{
   heroDraft = structuredClone(liveHero);
   renderHero(heroDraft); syncHeroForm();
+  $("applyHero").disabled = true;
+  $("resetHero").disabled = true;
 };
 
 // CTA
@@ -175,84 +178,42 @@ $("genCta").onclick = async()=>{
   if(!text) return status.textContent="Enter an instruction";
   ctaDraft = await post("/api/ai-generate",{section:"cta",instruction:text});
   renderCta(ctaDraft); syncCtaForm();
-  $("applyCta").disabled=false; $("resetCta").disabled=false;
+  markCtaDirty();
   status.textContent="CTA ready";
 };
 
 $("applyCta").onclick = async () => {
   $("applyCta").disabled = true;
   status.textContent = "Saving CTA...";
-
   try {
-    const res = await post("/api/ai-edit", {
-      section: "cta",
-      content: ctaDraft
-    });
-
+    const res = await post("/api/ai-edit",{section:"cta",content:ctaDraft});
     liveCta = structuredClone(res.result);
     ctaDraft = structuredClone(liveCta);
-
-    renderCta(ctaDraft);
-    syncCtaForm();
-
+    renderCta(ctaDraft); syncCtaForm();
     status.textContent = "CTA saved";
   } catch (err) {
     console.error(err);
     status.textContent = "Error saving CTA";
-  } finally {
-    $("applyCta").disabled = false;
   }
 };
 
 $("resetCta").onclick = ()=>{
   ctaDraft = structuredClone(liveCta);
   renderCta(ctaDraft); syncCtaForm();
-};
-// ----- Manual override bindings (HERO) -----
-$("editTitle").oninput = () => {
-  heroDraft.title = $("editTitle").value;
-  renderHero(heroDraft);
+  $("applyCta").disabled = true;
+  $("resetCta").disabled = true;
 };
 
-$("editSubtitle").oninput = () => {
-  heroDraft.subtitle = $("editSubtitle").value;
-  renderHero(heroDraft);
-};
+// ----- Manual override bindings -----
+$("editTitle").oninput = () => { heroDraft.title = $("editTitle").value; renderHero(heroDraft); markHeroDirty(); };
+$("editSubtitle").oninput = () => { heroDraft.subtitle = $("editSubtitle").value; renderHero(heroDraft); markHeroDirty(); };
+$("editCtaLabel").oninput = () => { heroDraft.cta ??= {}; heroDraft.cta.label = $("editCtaLabel").value; renderHero(heroDraft); markHeroDirty(); };
+$("editCtaHref").oninput = () => { heroDraft.cta ??= {}; heroDraft.cta.href = $("editCtaHref").value; renderHero(heroDraft); markHeroDirty(); };
 
-$("editCtaLabel").oninput = () => {
-  heroDraft.cta ??= {};
-  heroDraft.cta.label = $("editCtaLabel").value;
-  renderHero(heroDraft);
-};
-
-$("editCtaHref").oninput = () => {
-  heroDraft.cta ??= {};
-  heroDraft.cta.href = $("editCtaHref").value;
-  renderHero(heroDraft);
-};
-
-// ----- Manual override bindings (CTA) -----
-$("editCtaHeading").oninput = () => {
-  ctaDraft.heading = $("editCtaHeading").value;
-  renderCta(ctaDraft);
-};
-
-$("editCtaDescription").oninput = () => {
-  ctaDraft.description = $("editCtaDescription").value;
-  renderCta(ctaDraft);
-};
-
-$("editCtaBtnLabel").oninput = () => {
-  ctaDraft.button ??= {};
-  ctaDraft.button.label = $("editCtaBtnLabel").value;
-  renderCta(ctaDraft);
-};
-
-$("editCtaBtnHref").oninput = () => {
-  ctaDraft.button ??= {};
-  ctaDraft.button.href = $("editCtaBtnHref").value;
-  renderCta(ctaDraft);
-};
+$("editCtaHeading").oninput = () => { ctaDraft.heading = $("editCtaHeading").value; renderCta(ctaDraft); markCtaDirty(); };
+$("editCtaDescription").oninput = () => { ctaDraft.description = $("editCtaDescription").value; renderCta(ctaDraft); markCtaDirty(); };
+$("editCtaBtnLabel").oninput = () => { ctaDraft.button ??= {}; ctaDraft.button.label = $("editCtaBtnLabel").value; renderCta(ctaDraft); markCtaDirty(); };
+$("editCtaBtnHref").oninput = () => { ctaDraft.button ??= {}; ctaDraft.button.href = $("editCtaBtnHref").value; renderCta(ctaDraft); markCtaDirty(); };
 
 </script>
 </div>

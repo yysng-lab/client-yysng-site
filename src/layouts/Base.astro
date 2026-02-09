@@ -9,12 +9,32 @@ const { title = "EzyCoaching", description = "EzyCoaching" } = Astro.props;
 ---
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <slot name="head" />
-  </head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+
+  {/* Canonical */}
+  <link rel="canonical" href={Astro.props.canonical ?? Astro.url.href} />
+
+  {/* Open Graph */}
+  <meta property="og:title" content={Astro.props.ogTitle ?? title} />
+  <meta property="og:description" content={Astro.props.ogDescription ?? description} />
+  <meta property="og:type" content={Astro.props.ogType ?? "website"} />
+  <meta property="og:url" content={Astro.props.canonical ?? Astro.url.href} />
+  {Astro.props.ogImage && <meta property="og:image" content={Astro.props.ogImage} />}
+
+  {/* Optional: keywords */}
+  {Astro.props.keywords && <meta name="keywords" content={Astro.props.keywords} />}
+
+  {/* JSON-LD blocks (array of objects) */}
+  {Array.isArray(Astro.props.jsonLd) && Astro.props.jsonLd.map((obj) => (
+    <script type="application/ld+json" set:html={JSON.stringify(obj)} />
+  ))}
+
+  <slot name="head" />
+</head>
 
   <body class="min-h-screen relative">
     <!-- ambient drift (global background) -->

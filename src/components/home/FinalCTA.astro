@@ -1,32 +1,28 @@
 ---
 const { data } = Astro.props;
 
-const kicker =
-  data.kicker ?? "READY TO TRANSFORM YOUR SALES PERFORMANCE?";
+// robust newline renderer
+const renderText = (v = "") =>
+  String(v)
+    .replace(/\\n/g, "\n")     // literal "\n" from JSON / AI
+    .replace(/\r\n/g, "\n")    // Windows newlines
+    .replace(/\n/g, "<br />"); // HTML line breaks
 ---
 
 <section class="py-24 md:py-28">
   <div class="container">
-    <!-- Notion-style readable column (left aligned) -->
     <div class="text-col">
-      <p
-        data-reveal-item
-        class="text-[11px] tracking-[0.22em] uppercase font-semibold text-[color:var(--accent)]"
-      >
-        {kicker}
-      </p>
-
       <h2
         data-reveal-item
         class="mt-4 text-balance text-[color:var(--primary)]"
-      >
-        {data.heading}
-      </h2>
+        set:html={renderText(data.heading)}
+      ></h2>
 
       {data.description && (
-        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]">
-          {data.description}
-        </p>
+        <p
+          class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]"
+          set:html={renderText(data.description)}
+        ></p>
       )}
 
       <div class="mt-10">

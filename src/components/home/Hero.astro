@@ -1,5 +1,12 @@
 ---
 const { data } = Astro.props;
+
+// robust newline renderer (handles both "\n" and "\\n")
+const renderText = (v = "") =>
+  String(v)
+    .replace(/\\n/g, "\n")     // literal "\n" from JSON / AI
+    .replace(/\r\n/g, "\n")    // Windows newlines
+    .replace(/\n/g, "<br />"); // HTML line breaks
 ---
 
 <section class="relative w-full min-h-[100svh] -mt-16">
@@ -22,14 +29,16 @@ const { data } = Astro.props;
   <div class="relative z-10">
     <div class="container min-h-[100svh] pt-16 flex items-center">
       <div class="max-w-3xl">
-        <h1 class="text-white font-semibold leading-[1.05]">
-          {data.title}
-        </h1>
+        <h1
+          class="text-white font-semibold leading-[1.05]"
+          set:html={renderText(data.title)}
+        ></h1>
 
         {data.subtitle && (
-          <p class="mt-6 text-white/80 text-lg max-w-2xl">
-            {data.subtitle}
-          </p>
+          <p
+            class="mt-6 text-white/80 text-lg max-w-2xl"
+            set:html={renderText(data.subtitle)}
+          ></p>
         )}
 
         {data.cta?.href && data.cta?.label && (
