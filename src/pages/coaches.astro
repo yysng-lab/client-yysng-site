@@ -10,61 +10,61 @@ import Base from "../layouts/Base.astro";
 const coaches = [
   {
     name: "Serene Pek",
-    img: "/images/coaches/serene.png",
+    imgBase: "serene",
     title: "Former banking leader • ICF PCC",
     desc: "Holds leaders steady when confidence wavers under sustained performance pressure. Calm, grounded coaching for sales leaders who need clarity under load.",
   },
   {
     name: "Hooi Chin Chow",
-    img: "/images/coaches/hooi-chin.png",
+    imgBase: "hooi-chin",
     title: "Former Sales Director • Regional team leader",
     desc: "Helps leaders slow down thinking when results demand faster decisions. Brings structure and perspective when speed starts to blur judgment.",
   },
   {
     name: "Atul Shah",
-    img: "/images/coaches/atul.png",
+    imgBase: "atul",
     title: "Senior sales & operations leader",
     desc: "Brings structure when leaders face scale, systems, and people strain. Helps you think clearly when growth introduces friction you can’t outwork.",
   },
   {
     name: "Colin Lee",
-    img: "/images/coaches/colin.png",
+    imgBase: "colin",
     title: "Corporate leader & entrepreneur • ICF MCC",
     desc: "Holds clarity when leaders carry vision without alignment below. Supports decisive leadership when direction is clear but execution is not.",
   },
   {
     name: "Fred Then",
-    img: "/images/coaches/fred.png",
+    imgBase: "fred",
     title: "Serial entrepreneur • SME coach",
     desc: "Helps founders regain direction when complexity multiplies too quickly. Cuts through noise and re-centers decisions on what matters next.",
   },
   {
     name: "Dr. Jennifer Lim",
-    img: "/images/coaches/jennifer.png",
+    imgBase: "jennifer",
     title: "ICF PCC • Resilience & self-leadership",
     desc: "Supports leaders navigating emotional pressure that clouds decision-making. Helps restore steadiness, clarity, and follow-through under stress.",
   },
   {
     name: "Edwina Woo",
-    img: "/images/coaches/edwina-woo.png",
+    imgBase: "edwina-woo",
     title: "ICF PCC • Enneagram practitioner",
     desc: "Helps leaders notice patterns they’ve normalised but outgrown. Builds clarity through self-awareness when old instincts stop working.",
   },
   {
     name: "Ryan Chew",
-    img: "/images/coaches/ryan.png",
+    imgBase: "ryan",
     title: "Former military leader • Leadership coach",
     desc: "Grounds leaders when discipline and empathy need to coexist. Brings steadiness when leadership demands are high and signals are mixed.",
   },
   {
     name: "Adrian Song",
-    img: "/images/coaches/adrian.png",
+    imgBase: "adrian",
     title: "Associate Certified Coach • Cross-industry leader",
     desc: "Supports leaders through uncertainty when change feels personal. Helps you regain clarity when the next move is not obvious.",
   },
   {
     name: "Yan Yuan Sng (YY)",
-    img: "/images/coaches/yy.png",
+    imgBase: "yy",
     title: "Growth operator • Board advisor • Strategy",
     desc: "Works with leaders when effort is high but progress feels unclear. Brings operator thinking to decisions that affect momentum, teams, and outcomes.",
   },
@@ -198,12 +198,19 @@ const canonical = "https://ezycoaching.com/coaches/";
             <article class="coach-card">
               <div class="flex items-start gap-5">
                 <img
-                  src={c.img}
-                  alt={c.name}
-                  class="coach-img"
-                  loading="lazy"
-                  decoding="async"
-                />
+                    src={`/images/coaches/gen/${c.imgBase}-144.webp`}
+                    srcset={`
+                        /images/coaches/gen/${c.imgBase}-144.webp 144w,
+                        /images/coaches/gen/${c.imgBase}-288.webp 288w
+                    `}
+                    sizes="144px"
+                    width="144"
+                    height="144"
+                    alt={c.name}
+                    class="coach-img"
+                    loading="lazy"
+                    decoding="async"
+                    />
 
                 <div class="min-w-0">
                   <p class="font-semibold text-[color:var(--text)] leading-snug">
