@@ -1,5 +1,8 @@
 {
-  "heading": "Ready to transform your sales performance?",
-  "description": "It comes from clarity and focus. Lasting results aren’t just about strategy — with the right support, leaders and teams can excel.",
-  "button": { "label": "Let’s Talk", "href": "/contact-us/" }
+  "heading": "If this feels familiar, it’s worth a conversation.",
+  "description": "No pitch.\nNo obligation.\nJust clarity on what’s really slowing things down.",
+  "button": {
+    "label": "Book a Conversation",
+    "href": "#"
+  }
 }

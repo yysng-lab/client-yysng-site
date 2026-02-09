@@ -74,7 +74,7 @@ export async function updateContentAdapter(section, incoming, env = {}) {
   const file = REGISTRY[section];
   if (!file) throw new Error(`No registry entry for ${section}`);
 
-  const root = path.resolve(process.cwd(), "src", "content");
+  const root = path.resolve(process.cwd(), "src", "data");
   const filePath = path.join(root, file);
 
   let existing = {};

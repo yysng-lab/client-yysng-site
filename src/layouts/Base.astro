@@ -2,16 +2,79 @@
 import "../styles/theme.css";
 import "../styles/global.css";
 
-const { title = "EzyCoaching" } = Astro.props;
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const { title = "EzyCoaching", description = "EzyCoaching" } = Astro.props;
 ---
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    <meta name="description" content={description} />
     <slot name="head" />
   </head>
-  <body>
-    <slot />
+
+  <body class="min-h-screen relative">
+    <!-- ambient drift (global background) -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+      <div class="ambient-drift"></div>
+    </div>
+
+    <!-- global header -->
+    <Header />
+
+    <!-- page content -->
+    <main class="pt-16">
+      <slot />
+    </main>
+
+    <!-- global footer -->
+    <Footer />
+
+    <!-- Alpine -->
+    <script
+      is:inline
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+      defer
+    ></script>
+
+    <!-- reveal logic (headers only) -->
+    <script is:inline>
+      (() => {
+        const run = () => {
+          const els = Array.from(document.querySelectorAll("[data-reveal-item]"));
+          if (els.length === 0) return;
+
+          els.forEach(el => el.classList.add("reveal"));
+
+          if (!("IntersectionObserver" in window)) {
+            els.forEach(el => el.classList.add("is-visible"));
+            return;
+          }
+
+          const io = new IntersectionObserver((entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-visible");
+                io.unobserve(e.target);
+              }
+            }
+          }, {
+            threshold: 0.2,
+            rootMargin: "0px 0px -10% 0px",
+          });
+
+          els.forEach(el => io.observe(el));
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", run, { once: true });
+        } else {
+          run();
+        }
+      })();
+    </script>
   </body>
 </html>

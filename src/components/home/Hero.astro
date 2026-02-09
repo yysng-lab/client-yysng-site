@@ -1,35 +1,49 @@
 ---
 const { data } = Astro.props;
-
-const bgUrl =
-  "https://ezycoaching.com/wp-content/uploads/2025/08/homepage-hero-4.png";
 ---
 
-<section
-  class="w-full bg-no-repeat bg-cover bg-center"
-  style={`background-image:url(${bgUrl});`}
->
-  <div class="bg-[rgba(250,243,236,0.85)]">
-    <div class="max-w-6xl mx-auto px-6 py-16 md:py-24">
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-10 items-center">
-        <div class="md:col-span-3">
-          <h1 class="font-medium leading-[1.15] text-[44px] md:text-[71px] text-[color:var(--primary)]">
-            {data.title}
-          </h1>
+<section class="relative w-full min-h-[100svh] -mt-16">
+  <!-- Background image (always cover; tune crop via position) -->
+  <div
+    class="absolute inset-0 bg-cover bg-[position:70%_20%] md:bg-center"
+    style="background-image: url('/images/hero/hero-bg-1.png');"
+    aria-hidden="true"
+  ></div>
 
-          <p class="mt-5 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-2xl">
+  <!-- Readability overlay (gradient, not a flat gray slab) -->
+  <div
+    class="absolute inset-0
+           bg-[linear-gradient(180deg,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.45)_55%,rgba(0,0,0,0.55)_100%)]
+           md:bg-[linear-gradient(90deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.35)_52%,rgba(0,0,0,0.20)_100%)]"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Content (kept below sticky header height) -->
+  <div class="relative z-10">
+    <div class="container min-h-[100svh] pt-16 flex items-center">
+      <div class="max-w-3xl">
+        <h1 class="text-white font-semibold leading-[1.05]">
+          {data.title}
+        </h1>
+
+        {data.subtitle && (
+          <p class="mt-6 text-white/80 text-lg max-w-2xl">
             {data.subtitle}
           </p>
+        )}
 
-          <a
-            href={data.cta?.href}
-            class="btn-primary mt-8 inline-flex items-center text-[16px]"
-          >
-            {data.cta?.label}
-          </a>
-        </div>
-
-        <div class="md:col-span-2"></div>
+        {data.cta?.href && data.cta?.label && (
+          <div class="mt-10">
+            <a
+              href={data.cta.href}
+              class="inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold
+                     bg-[color:var(--primary)] text-[color:var(--primary-contrast)]
+                     shadow-[var(--shadow-sm)] hover:brightness-[0.97] transition"
+            >
+              {data.cta.label}
+            </a>
+          </div>
+        )}
       </div>
     </div>
   </div>

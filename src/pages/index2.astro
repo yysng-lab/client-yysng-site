@@ -1,0 +1,292 @@
+---
+export const prerender = false;
+
+import Base from "../layouts/Base.astro";
+
+import heroDefault from "../data/hero.json";
+import ctaDefault from "../data/cta.json";
+
+import Hero from "../components/home/Hero.astro";
+import FinalCTA from "../components/home/FinalCTA.astro";
+
+type HeroContent = typeof heroDefault;
+type CtaContent = typeof ctaDefault;
+
+const env = Astro.locals?.runtime?.env ?? {};
+
+async function readKVOrDefault<T>(key: string, fallback: T): Promise<T> {
+  if (!env.CONTENT_KV) return fallback;
+  const raw = await env.CONTENT_KV.get(`${key}.json`);
+  if (!raw) return fallback;
+  try { return JSON.parse(raw) as T; } catch { return fallback; }
+}
+
+const hero = await readKVOrDefault<HeroContent>("hero", heroDefault);
+const cta  = await readKVOrDefault<CtaContent>("cta", ctaDefault);
+---
+
+<Base title="EzyCoaching">
+  <main>
+
+    <!-- HERO -->
+    <Hero data={hero} />
+
+    =
+<!-- SECTION 2 — PROBLEM ENTRY -->
+<section class="section">
+  <div class="container">
+    <div class="split">
+      <!-- Text -->
+      <div class="split-text">
+      
+
+        <h2
+          data-reveal-item
+          class="mt-4 text-[color:var(--primary)] text-balance"
+        >
+          You’re not failing.<br />You’re hesitating.
+        </h2>
+
+        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-md">
+          It doesn’t look dramatic.<br />
+          It shows up as waiting, double-checking,<br />
+          or pushing the decision to next week.
+        </p>
+      </div>
+
+      <!-- Visual -->
+      <div class="split-visual">
+        <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
+          <div class="aspect-[16/11]">
+            <img
+              src="/images/home-sections/section-2-3.jpg"
+              alt="Leadership hesitation in everyday decisions"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 3 — PATTERN RECOGNITION -->
+<section class="section">
+  <div class="container">
+    <div class="text-col">
+      <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
+        Most leadership friction doesn’t look like mistakes.<br />
+        It looks like delay.
+      </h2>
+
+      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-2xl">
+        Decisions loop.<br />
+        Conversations get postponed.<br />
+        Momentum slows without anyone calling it out.
+      </p>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 4 — CONTEXT GAP -->
+    
+<!-- SECTION 4 — CONTEXT GAP -->
+<section class="section">
+  <div class="container">
+    <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
+      <div class="relative">
+        <!-- Background image -->
+        <div class="h-[380px] md:h-[460px]">
+          <img
+            src="/images/home-sections/section-4-2.jpg"
+            alt="Quiet moments after meetings where decisions stall"
+            class="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <!-- Dark overlay for readability -->
+        <div class="absolute inset-0 bg-black/25"></div>
+
+        <!-- Text overlay -->
+        <div class="absolute inset-0 flex items-center">
+          <!-- same horizontal rhythm as container -->
+          <div class="w-full px-6 md:px-12">
+            <!-- same text column width as other sections -->
+            <div class="text-col max-w-4xl">
+             
+
+              <h2
+                data-reveal-item
+                class="mt-4 text-white text-balance"
+              >
+                The hardest moments happen after the meeting ends.
+              </h2>
+
+              <p class="mt-6 text-[18px] leading-relaxed text-white/80 max-w-2xl">
+                After the advice.<br />
+                Before the decision.<br />
+                When no one is watching.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 5 — WHY SUPPORT DIDN’T STICK -->
+  
+<section class="section">
+  <div class="container">
+    <div class="text-col">
+      <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
+        Advice makes sense.<br />Then Monday happens.
+      </h2>
+
+      <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-2xl">
+        Not because people forgot.<br />
+        Because real pressure didn’t look like the example.
+      </p>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 6 — POSITIONING -->
+<section class="py-20 md:py-28">
+  <div class="container">
+    <div class="editorial-grid">
+      <!-- left: text -->
+      <div class="editorial-main">
+        <div class="text-col">
+          
+
+          <h2
+            data-reveal-item
+            class="mt-4 text-[color:var(--primary)] text-balance"
+          >
+            We work with leaders inside real decisions.
+          </h2>
+
+          <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]">
+            Not in workshops.<br />
+            Not weeks later.<br />
+            When the moment actually shows up.
+          </p>
+        </div>
+      </div>
+
+      <!-- right: aside visual -->
+      <div class="editorial-aside">
+        <div class="aside-card p-6">
+          <!-- image -->
+          <div class="h-[190px] overflow-hidden rounded-[calc(var(--radius-lg)-6px)]">
+            <img
+              src="/images/home-sections/section-6-2.jpg"
+              alt="Coaching support embedded in real work moments"
+              class="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- SECTION 7 — TESTIMONIALS -->
+<!-- SECTION 7 — TESTIMONIALS (editorial split) -->
+<section
+  class="py-24 md:py-32"
+  x-data="{
+    active: 0,
+    testimonials: [
+      {
+        name: 'Malcolm',
+        quote: 'She never pushed — just asked the right questions. And somehow, that was enough for me to find my own pace.',
+        img: 'images/testimonials/malcolm.png'
+      },
+      {
+        name: 'Alex Morgan',
+        quote: 'Less second-guessing. More follow-through.',
+        img: 'images/testimonials/wanling.png'
+      },
+      {
+        name: 'Jamie Chen',
+        quote: 'The decision got lighter. The week got faster.',
+        img: 'images/testimonials/benson.png'
+      }
+    ]
+  }"
+>
+  <div class="container">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+
+      <!-- LEFT: framing -->
+      <div class="lg:col-span-4">
+        <h2
+          data-reveal-item
+          class="text-[color:var(--primary)] text-balance"
+        >
+          What changes when hesitation drops.
+        </h2>
+
+        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]">
+          Clients don’t talk about motivation.<br />
+          They talk about movement.
+        </p>
+      </div>
+
+      <!-- RIGHT: testimonials -->
+      <div class="lg:col-span-8">
+
+        <!-- avatars -->
+        <div class="flex items-center gap-4">
+          <template x-for="(t,i) in testimonials" :key="i">
+            <button
+              @click="active = i"
+              @mouseenter="matchMedia('(hover:hover)').matches && (active = i)"
+              class="focus:outline-none"
+            >
+              <img
+                :src="t.img"
+                :alt="t.name"
+                class="rounded-full object-cover transition-all duration-300"
+                :class="active === i
+                  ? 'h-16 w-16 ring-2 ring-[color:var(--accent)]'
+                  : 'h-12 w-12 opacity-60 hover:opacity-90'"
+              />
+            </button>
+          </template>
+        </div>
+
+        <!-- quote -->
+        <div class="mt-10 max-w-2xl">
+          <p
+            class="text-[22px] leading-snug text-[color:var(--text)]"
+            x-text="testimonials[active].quote"
+          ></p>
+
+          <p
+            class="mt-4 text-sm text-[color:var(--muted)]"
+            x-text="testimonials[active].name"
+          ></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    <!-- FINAL CTA -->
+    <FinalCTA data={cta} />
+  </main>
+
+</Base>

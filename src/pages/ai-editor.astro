@@ -1,7 +1,10 @@
 ---
-
 export const prerender = false;
 
+import { fileURLToPath } from "node:url";
+import { setContentRoot } from "@yysng/astro-boilerplate";
+
+// components
 import HeroView from "../sections/HeroView.astro";
 import CTASection from "../sections/CTASection.astro";
 
@@ -9,16 +12,20 @@ let currentHero;
 let currentCta;
 
 if (import.meta.env.DEV) {
+  // 👇 resolve to /src/data
+  const contentRoot = fileURLToPath(new URL("../data/", import.meta.url));
+
+  // 🔑 THIS IS THE MISSING STEP
+  setContentRoot(contentRoot);
+
   const { loadContent } = await import("@yysng/astro-boilerplate");
 
-  const env = Astro.locals?.runtime?.env ?? {};
-  currentHero = await loadContent("hero", env);
-  currentCta  = await loadContent("cta", env);
+  currentHero = await loadContent("hero");
+  currentCta  = await loadContent("cta");
 } else {
   currentHero = (await import("../data/hero.json")).default;
   currentCta  = (await import("../data/cta.json")).default;
 }
-
 ---
 
 <style>

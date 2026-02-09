@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ===============================
-   BASE TYPOGRAPHY + DEFAULTS
+   BASE TYPOGRAPHY
 ================================ */
 @layer base {
   html { scroll-behavior: smooth; }
@@ -11,15 +11,10 @@
     font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
       "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.65;
+    line-height: 1.7;
     color: var(--text);
     background: var(--bg);
   }
-
-  /* Coaching-style font pairing:
-     - Body: system sans (clean, fast)
-     - Headings: a subtle "display" feel via weight/spacing (no external font needed)
-     If you later want: add "Fraunces" or "Playfair Display" for headings. */
 
   h1, h2, h3, h4, h5, h6 {
     color: var(--text);
@@ -28,19 +23,19 @@
 
   h1 {
     font-weight: 650;
-    font-size: clamp(2.25rem, 4.8vw, 3.75rem);
+    font-size: clamp(2.3rem, 4.8vw, 3.8rem);
     line-height: 1.05;
   }
 
   h2 {
     font-weight: 650;
-    font-size: clamp(1.75rem, 3.4vw, 2.6rem);
-    line-height: 1.12;
+    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
+    line-height: 1.15;
   }
 
   h3 {
     font-weight: 600;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     line-height: 1.25;
   }
 
@@ -49,81 +44,109 @@
     font-size: 1.05rem;
   }
 
-    /* Links look brand-consistent */
-  a {
-    text-decoration: none;
-  }
-
+  a { text-decoration: none; }
   a:hover {
     text-decoration: underline;
     text-decoration-color: var(--accent);
     text-underline-offset: 4px;
   }
-  /* Make default borders feel softer everywhere */
-  * {
-    border-color: var(--border);
-  }
+
+  * { border-color: var(--border); }
 }
 
 /* ===============================
-   LAYOUT HELPERS + UI TOKENS
+   LAYOUT + UI PRIMITIVES
 ================================ */
 @layer components {
+  /* Override Tailwind's container padding */
   .container {
-    @apply max-w-6xl mx-auto px-6;
+    @apply mx-auto px-6 md:px-10 lg:px-12;
   }
 
+  /* Notion-like readable line length */
+  .text-col {
+    @apply max-w-[46rem];
+  }
+
+  /* Section rhythm (tight but readable) */
   .section {
-    @apply py-20;
+    @apply py-14 md:py-20;
   }
 
-  .section-tight {
-    @apply py-12;
-  }
+  /* Standard split layout */
+  .split { @apply grid grid-cols-1 lg:grid-cols-12 gap-12 items-start; }
+  .split-text { @apply lg:col-span-5; }
+  .split-visual { @apply lg:col-span-7; }
 
-  /* Softer "card" style */
+  /* Shared visual frame */
+  .visual-frame { @apply rounded-[var(--radius-lg)] overflow-hidden ring-1 ring-[color:var(--border)] bg-[rgba(255,255,255,0.75)]; }
+
   .card {
     background: var(--surface);
-    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
   }
 
-  /* Better default button */
   .btn-primary {
     background: var(--primary);
     color: var(--primary-contrast);
     border-radius: var(--radius-md);
-    padding: 0.85rem 1.4rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-sm);
-  }
-  .btn-primary:hover { opacity: 0.92; }
-
-  /* Reduce “black border everywhere” from generic Tailwind borders */
-  .border,
-  .border-t,
-  .border-b,
-  .border-l,
-  .border-r {
-    border-color: var(--border);
-  }
-
-  /* Make bg-white utilities still feel ok when used */
-  .bg-white {
-    background: var(--surface);
-  }
-
-  .btn-primary {
-    background: var(--primary);
-    color: var(--primary-contrast);
-    border-radius: var(--radius-md);
-    padding: 0.85rem 1.4rem;
+    padding: 0.85rem 1.3rem;
     font-weight: 600;
     box-shadow: var(--shadow-sm);
   }
 
   .btn-primary:hover {
-    filter: brightness(0.95);
+    filter: brightness(0.96);
+  }
+}
+
+/* ===============================
+   SCROLL REVEAL (HEADERS ONLY)
+================================ */
+@layer components {
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 600ms ease, transform 600ms ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   AMBIENT BACKGROUND (ONE SYSTEM)
+================================ */
+@layer components {
+  .ambient-drift {
+    position: absolute;
+    inset: -22%;
+    pointer-events: none;
+    z-index: -1;
+
+    background:
+      radial-gradient(45% 35% at 20% 25%, rgba(209, 107, 76, 0.12), transparent 60%),
+      radial-gradient(40% 30% at 75% 35%, rgba(24, 73, 121, 0.12), transparent 60%),
+      radial-gradient(35% 30% at 55% 80%, rgba(209, 107, 76, 0.08), transparent 65%);
+
+    filter: blur(34px);
+    opacity: 1;
+    transform: translate3d(0,0,0) scale(1);
+    animation: driftTransform 36s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes driftTransform {
+    0%   { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+    50%  { transform: translate3d( 1.2%,  1.4%, 0) scale(1.05); }
+    100% { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-drift { animation: none; }
   }
 }
