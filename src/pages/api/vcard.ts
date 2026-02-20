@@ -32,8 +32,8 @@ export const GET: APIRoute = async ({ url, locals }) => {
   // Offline mode includes TEL only if token matches
   const tokenValid =
     m === "offline" &&
-    t &&
-    contact.privateToken &&
+    Boolean(t) &&
+    Boolean(contact.privateToken) &&
     t === contact.privateToken;
 
   const lines: string[] = [
@@ -46,11 +46,23 @@ export const GET: APIRoute = async ({ url, locals }) => {
     lines.push(`TEL;TYPE=CELL:${escVCard(contact.phone)}`);
   }
 
+  // Always include email
   lines.push(`EMAIL:${escVCard(contact.email)}`);
 
+  // Optional business fields (can exist even if not shown on frontend)
   if (contact.company) lines.push(`ORG:${escVCard(contact.company)}`);
   if (contact.headline) lines.push(`TITLE:${escVCard(contact.headline)}`);
-  if (contact.website) lines.push(`URL:${escVCard(contact.website)}`);
+
+  // URL logic:
+  // - Prefer personal website if present
+  // - Otherwise fall back to LinkedIn (so every contact has a usable URL field)
+  const primaryUrl = contact.website || contact.linkedin;
+  if (primaryUrl) lines.push(`URL:${escVCard(primaryUrl)}`);
+
+  // Put LinkedIn in NOTE when website is the primary URL (best compatibility)
+  if (contact.website && contact.linkedin) {
+    lines.push(`NOTE:${escVCard(`LinkedIn: ${contact.linkedin}`)}`);
+  }
 
   lines.push("END:VCARD");
 
@@ -59,7 +71,6 @@ export const GET: APIRoute = async ({ url, locals }) => {
   const headers = new Headers({
     "Content-Type": "text/vcard; charset=utf-8",
     "Content-Disposition": `attachment; filename="${contact.slug}.vcf"`,
-    // safer caching policy for private mode
     "Cache-Control": tokenValid ? "no-store" : "public, max-age=300",
   });
 
