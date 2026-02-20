@@ -1,5 +1,4 @@
-// functions/api/vcard.ts
-import type { PagesFunction } from "@cloudflare/workers-types";
+import type { APIRoute } from "astro";
 import contactsDev from "../../data/contacts.dev.json";
 
 type ContactRecord = {
@@ -35,8 +34,7 @@ function buildVcard(opts: { contact: ContactRecord; includeTel: boolean }): stri
 
   if (c.headline) lines.push(`TITLE:${sanitize(c.headline)}`);
 
-  // Website fallback logic (important)
-  const primaryUrl = c.website || (c as any).linkedin;
+  const primaryUrl = c.website;
   if (primaryUrl) lines.push(`URL:${sanitize(primaryUrl)}`);
 
   lines.push("END:VCARD");
@@ -44,51 +42,38 @@ function buildVcard(opts: { contact: ContactRecord; includeTel: boolean }): stri
   return lines.join("\r\n") + "\r\n";
 }
 
-async function getContact(slug: string, env: any): Promise<ContactRecord | null> {
-  // PROD: KV
-  const kv = env?.CONTACTS_KV as KVNamespace | undefined;
-  if (kv) {
-    const raw = await kv.get(`contact:${slug}`);
-    if (raw) {
-      try {
-        return JSON.parse(raw) as ContactRecord;
-      } catch {
-        return null;
-      }
-    }
-  }
-
-  // DEV: file fallback
+async function getContact(slug: string): Promise<ContactRecord | null> {
   return DEV_DATA.contacts.find((c) => c.slug === slug) ?? null;
 }
 
-export const onRequestGet: PagesFunction = async (context) => {
-  const url = new URL(context.request.url);
+export const GET: APIRoute = async ({ url }) => {
   const slug = url.searchParams.get("slug") ?? "";
   const mode = (url.searchParams.get("m") ?? "public").toLowerCase();
   const token = url.searchParams.get("t") ?? "";
 
-  if (!slug) return new Response("Missing slug", { status: 400 });
+  if (!slug) {
+    return new Response("Missing slug", { status: 400 });
+  }
 
-  const contact = await getContact(slug, context.env);
-  if (!contact) return new Response("Contact not found", { status: 404 });
+  const contact = await getContact(slug);
+  if (!contact) {
+    return new Response("Contact not found", { status: 404 });
+  }
 
   const wantsOffline = mode === "offline";
   const tokenValid =
     wantsOffline &&
     typeof contact.privateToken === "string" &&
-    contact.privateToken.length >= 20 &&
-    token.length >= 20 &&
     token === contact.privateToken;
 
   const vcf = buildVcard({ contact, includeTel: tokenValid });
 
-  const headers = new Headers();
-  headers.set("Content-Type", "text/vcard; charset=utf-8");
-  headers.set("Content-Disposition", `attachment; filename="${slug}.vcf"`);
-
-  // Cache rules
-  headers.set("Cache-Control", tokenValid ? "no-store" : "public, max-age=300");
-
-  return new Response(vcf, { status: 200, headers });
+  return new Response(vcf, {
+    status: 200,
+    headers: {
+      "Content-Type": "text/vcard; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${slug}.vcf"`,
+      "Cache-Control": tokenValid ? "no-store" : "public, max-age=300",
+    },
+  });
 };
