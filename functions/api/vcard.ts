@@ -6,7 +6,6 @@ type ContactRecord = {
   slug: string;
   fullName: string;
   headline?: string;
-  company?: string;
   email: string;
   phone?: string;
   website?: string;
