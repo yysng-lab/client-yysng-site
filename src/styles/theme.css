@@ -1,47 +1,31 @@
 @layer base {
   :root {
-    /* ===== EzyCoaching brand ===== */
-    --brand-cream: #FAF3EC;
-    --brand-navy: #184979;
-    --brand-coral: #D16B4C;
+    /* ===== yysng.me (Operator) ===== */
 
-    /* ===== Global page surface (one continuous background) ===== */
-    --bg: #ffffff;
-    --wash: rgba(250, 243, 236, 0.85); /* cream wash you can use selectively */
+    /* Core palette (LOCKED) */
+    --bg: #F7F9FC;
+    --surface: #FFFFFF;
+    --ink: #0B1220;
+    --muted: #4B5563;
+    --border: #E5E7EB;
+    --accent: #2F6BFF;
+    --accentSoft: #EAF1FF;
 
-    /* Surfaces (used sparingly) */
-    --surface: rgba(255, 255, 255, 0.92);
-    --surface-2: rgba(255, 255, 255, 0.62);
+    /* Optional: subtle wash for overlays */
+    --wash: rgba(234, 241, 255, 0.55);
 
-    /* ===== Text ===== */
-    --text: #0b1220;
-    --muted: rgba(11, 18, 32, 0.72);
-    --muted-2: rgba(11, 18, 32, 0.55);
-
-    /* ===== Borders / shadows (very soft) ===== */
-    --border: rgba(24, 73, 121, 0.12);
-    --shadow-sm: 0 1px 2px rgba(11, 18, 32, 0.05);
+    /* ===== Shadows (quietly premium) ===== */
+    --shadow-sm: 0 1px 2px rgba(11, 18, 32, 0.06), 0 6px 20px rgba(11, 18, 32, 0.06);
     --shadow-md: 0 18px 55px rgba(11, 18, 32, 0.10);
-
-    /* ===== Primary / Accent ===== */
-    --primary: var(--brand-navy);
-    --primary-contrast: #ffffff;
-
-    --accent: var(--brand-coral);
-    --accent-contrast: #ffffff;
-    --accent-soft: rgba(209, 107, 76, 0.12);
-
-    /* ===== Focus ring ===== */
-    --focus: rgba(209, 107, 76, 0.35);
 
     /* ===== Radius ===== */
     --radius-sm: 10px;
-    --radius-md: 14px;
-    --radius-lg: 22px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
   }
 
   body {
     background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
   }
 }

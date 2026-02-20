@@ -5,53 +5,76 @@ import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 
-const { title = "EzyCoaching", description = "EzyCoaching" } = Astro.props;
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  noChrome?: boolean;   // 👈 add this
+}
+
+const {
+  title = "YY Sng",
+  description = "Operator-grade builder. Calm systems. Practical outcomes.",
+  canonical,
+  noChrome = false, 
+} = Astro.props;
 ---
+
 <html lang="en">
   <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>{title}</title>
-  <meta name="description" content={description} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
 
-  {/* Canonical */}
-  <link rel="canonical" href={Astro.props.canonical ?? Astro.url.href} />
+    <!-- Fonts: LOCKED (Sora headlines, Inter body/UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Sora:wght@500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
 
-  {/* Open Graph */}
-  <meta property="og:title" content={Astro.props.ogTitle ?? title} />
-  <meta property="og:description" content={Astro.props.ogDescription ?? description} />
-  <meta property="og:type" content={Astro.props.ogType ?? "website"} />
-  <meta property="og:url" content={Astro.props.canonical ?? Astro.url.href} />
-  {Astro.props.ogImage && <meta property="og:image" content={Astro.props.ogImage} />}
+    {/* Canonical */}
+    <link rel="canonical" href={Astro.props.canonical ?? Astro.url.href} />
 
-  {/* Optional: keywords */}
-  {Astro.props.keywords && <meta name="keywords" content={Astro.props.keywords} />}
+    {/* Open Graph */}
+    <meta property="og:title" content={Astro.props.ogTitle ?? title} />
+    <meta property="og:description" content={Astro.props.ogDescription ?? description} />
+    <meta property="og:type" content={Astro.props.ogType ?? "website"} />
+    <meta property="og:url" content={Astro.props.canonical ?? Astro.url.href} />
+    {Astro.props.ogImage && <meta property="og:image" content={Astro.props.ogImage} />}
 
-  {/* JSON-LD blocks (array of objects) */}
-  {Array.isArray(Astro.props.jsonLd) && Astro.props.jsonLd.map((obj) => (
-    <script type="application/ld+json" set:html={JSON.stringify(obj)} />
-  ))}
+    {/* Optional: keywords */}
+    {Astro.props.keywords && <meta name="keywords" content={Astro.props.keywords} />}
 
-  <slot name="head" />
-</head>
+    {/* JSON-LD blocks (array of objects) */}
+    {Array.isArray(Astro.props.jsonLd) && Astro.props.jsonLd.map((obj) => (
+      <script type="application/ld+json" set:html={JSON.stringify(obj)} />
+    ))}
+
+    <slot name="head" />
+  </head>
 
   <body class="min-h-screen relative">
-    <!-- ambient drift (global background) -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-      <div class="ambient-drift"></div>
-    </div>
+   <!-- ambient drift (global background) -->
+    {!noChrome && (
+      <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div class="ambient-drift"></div>
+      </div>
+    )}
 
     <!-- global header -->
-    <Header />
+   {!noChrome && <Header />}
 
     <!-- page content -->
-    <main class="pt-16">
+    <main class={noChrome ? "min-h-screen" : "pt-16"}>
       <slot />
     </main>
 
     <!-- global footer -->
-    <Footer />
+   {!noChrome && <Footer />}
 
     <!-- Alpine -->
     <script
@@ -61,40 +84,42 @@ const { title = "EzyCoaching", description = "EzyCoaching" } = Astro.props;
     ></script>
 
     <!-- reveal logic (headers only) -->
-    <script is:inline>
-      (() => {
-        const run = () => {
-          const els = Array.from(document.querySelectorAll("[data-reveal-item]"));
-          if (els.length === 0) return;
+    {!noChrome && (
+  <script is:inline>
+    (() => {
+      const run = () => {
+        const els = Array.from(document.querySelectorAll("[data-reveal-item]"));
+        if (els.length === 0) return;
 
-          els.forEach(el => el.classList.add("reveal"));
+        els.forEach(el => el.classList.add("reveal"));
 
-          if (!("IntersectionObserver" in window)) {
-            els.forEach(el => el.classList.add("is-visible"));
-            return;
-          }
-
-          const io = new IntersectionObserver((entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                e.target.classList.add("is-visible");
-                io.unobserve(e.target);
-              }
-            }
-          }, {
-            threshold: 0.2,
-            rootMargin: "0px 0px -10% 0px",
-          });
-
-          els.forEach(el => io.observe(el));
-        };
-
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", run, { once: true });
-        } else {
-          run();
+        if (!("IntersectionObserver" in window)) {
+          els.forEach(el => el.classList.add("is-visible"));
+          return;
         }
-      })();
-    </script>
+
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          }
+        }, {
+          threshold: 0.2,
+          rootMargin: "0px 0px -10% 0px",
+        });
+
+        els.forEach(el => io.observe(el));
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", run, { once: true });
+      } else {
+        run();
+      }
+    })();
+  </script>
+)}
   </body>
 </html>

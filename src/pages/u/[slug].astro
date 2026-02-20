@@ -1,0 +1,191 @@
+---
+// src/pages/u/[slug].astro
+import Base from "../../layouts/Base.astro";
+import { getContactBySlug, initialsFromName } from "../../lib/contacts.ts";
+
+const { slug } = Astro.params;
+const url = new URL(Astro.request.url);
+
+const m = url.searchParams.get("m") ?? "public";
+const t = url.searchParams.get("t") ?? "";
+
+const contact = await getContactBySlug({
+  slug: slug ?? "",
+  env: Astro.locals?.runtime?.env ?? {},
+});
+
+if (!contact) {
+  return new Response("Not found", { status: 404 });
+}
+
+const vcardHref =
+  `/api/vcard?slug=${encodeURIComponent(contact.slug)}&m=${encodeURIComponent(m)}&t=${encodeURIComponent(t)}`;
+
+const initials = initialsFromName(contact.fullName || "YY");
+
+// Offline mode = has t + explicitly m=offline
+const isOfflineMode = m === "offline" && Boolean(t);
+
+// Public mode should not show WhatsApp (phone-adjacent)
+const hasWhatsApp = Boolean(contact.whatsapp) && isOfflineMode;
+
+const hasLinkedIn = Boolean(contact.linkedin);
+const hasEmail = Boolean(contact.email);
+
+// 1-liner identity (prefer data field if present; fallback to headline)
+const oneLiner =
+  (contact as any).oneLiner ||
+  "";
+---
+
+<Base
+  noChrome
+  title={`${contact.fullName} — Connect`}
+  description={`${oneLiner || contact.headline || ""}`.trim() || "Connect"}
+  canonical={`https://card.yysng.me/${contact.slug}`}
+>
+  <!-- Top-first layout (no vertical centering) -->
+  <main class="min-h-[calc(100vh-4rem)]">
+    <section class="w-full pt-6 pb-14 md:pt-10 md:pb-16">
+      <div class="container">
+        <div class="mx-auto max-w-[420px]">
+          <div
+            class="rounded-[22px] border border-[color:var(--border)] bg-[color:var(--surface)]
+                   shadow-[var(--shadow-md)] px-6 py-7"
+          >
+            <!-- Identity row -->
+            <div class="flex items-start gap-4">
+              <!-- Avatar -->
+              {contact.photoUrl ? (
+                <img
+                  src={contact.photoUrl}
+                  alt={contact.fullName}
+                  width="88"
+                  height="88"
+                  loading="eager"
+                  decoding="async"
+                  class="h-[88px] w-[88px] rounded-full object-cover ring-1 ring-[color:var(--border)]"
+                />
+              ) : (
+                <div
+                  class="h-[88px] w-[88px] rounded-full flex items-center justify-center
+                         bg-[color:var(--accentSoft)] text-[color:var(--accent)]
+                         font-semibold ring-1 ring-[color:var(--border)]"
+                >
+                  {initials}
+                </div>
+              )}
+
+              <!-- Name + identity -->
+              <div class="min-w-0 flex-1">
+                <h1 class="text-[20px] font-[650] tracking-tight text-[color:var(--ink)] leading-tight">
+                  {contact.fullName}
+                </h1>
+
+                {contact.headline && (
+                  <p class="mt-1 text-sm font-medium text-[color:var(--ink)]/80">
+                    {contact.headline}
+                  </p>
+                )}
+
+                {oneLiner && (
+                  <p class="mt-2 text-sm leading-relaxed text-[color:var(--muted)] max-w-[38ch]">
+                    {oneLiner}
+                  </p>
+                )}
+
+                <!-- Icon actions -->
+                <div class="mt-4 flex items-center gap-3">
+                  {hasLinkedIn && (
+                    <a
+                      href={contact.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="h-11 w-11 inline-flex items-center justify-center rounded-full
+                             ring-1 ring-[color:var(--border)] bg-white/60
+                             hover:bg-[color:var(--accentSoft)] transition-colors
+                             text-[color:var(--ink)]"
+                      aria-label="LinkedIn"
+                      title="LinkedIn"
+                    >
+                      <!-- LinkedIn SVG -->
+                      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                        <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM0.5 8h4V23h-4V8ZM8 8h3.8v2.05h.05C12.38 8.86 13.84 8 15.72 8 19.6 8 20.5 10.42 20.5 13.56V23h-4v-8.35c0-1.99-.04-4.56-2.78-4.56-2.78 0-3.2 2.17-3.2 4.41V23H8V8Z"/>
+                      </svg>
+                    </a>
+                  )}
+
+                  {hasEmail && (
+                    <a
+                      href={`mailto:${contact.email}`}
+                      class="h-11 w-11 inline-flex items-center justify-center rounded-full
+                             ring-1 ring-[color:var(--border)] bg-white/60
+                             hover:bg-[color:var(--accentSoft)] transition-colors
+                             text-[color:var(--ink)]"
+                      aria-label="Email"
+                      title="Email"
+                    >
+                      <!-- Envelope SVG -->
+                      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8m18-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2m18 0-9 6-9-6" />
+                      </svg>
+                    </a>
+                  )}
+
+                  {hasWhatsApp && (
+                    <a
+                      href={`https://wa.me/${String(contact.whatsapp).replace(/[^\d]/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="h-11 w-11 inline-flex items-center justify-center rounded-full
+                             ring-1 ring-[color:var(--border)] bg-white/60
+                             hover:bg-[color:var(--accentSoft)] transition-colors
+                             text-[color:var(--ink)]"
+                      aria-label="WhatsApp"
+                      title="WhatsApp"
+                    >
+                      <!-- WhatsApp SVG -->
+                      <svg viewBox="0 0 32 32" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                        <path d="M16.02 3C9.4 3 4 8.39 4 15.01c0 2.63.86 5.06 2.3 7.02L4 29l7.17-2.26a11.93 11.93 0 0 0 4.85 1.03h.01C22.64 27.77 28 22.39 28 15.77 28 9.15 22.64 3 16.02 3Zm0 21.55h-.01c-1.55 0-3.07-.42-4.41-1.2l-.32-.19-4.26 1.34 1.39-4.14-.21-.33A9.33 9.33 0 0 1 6.7 15c0-5.14 4.18-9.33 9.32-9.33 5.14 0 9.33 4.18 9.33 9.33 0 5.14-4.19 9.55-9.33 9.55Z"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <!-- Single CTA -->
+            <div class="mt-7">
+              <a
+                href={vcardHref}
+                class="btn-primary w-full inline-flex items-center justify-center gap-2
+                       no-underline hover:no-underline"
+              >
+                Save contact
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+
+            <!-- About (optional) -->
+            {contact.about && (
+              <div class="mt-6 border-t border-[color:var(--border)] pt-5">
+                <p class="text-sm leading-relaxed text-[color:var(--muted)]">
+                  {contact.about}
+                </p>
+              </div>
+            )}
+
+            <!-- Footer -->
+            <div class="mt-7 pt-5 border-t border-[color:var(--border)] flex items-center justify-between text-xs text-[color:var(--muted)]">
+              <span>Powered by</span>
+              <a href="https://yysng.me" class="text-[color:var(--ink)] no-underline hover:no-underline">
+                yysng.me
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>

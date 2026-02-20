@@ -4,60 +4,65 @@ const { data } = Astro.props;
 // robust newline renderer (handles both "\n" and "\\n")
 const renderText = (v = "") =>
   String(v)
-    .replace(/\\n/g, "\n")     // literal "\n" from JSON / AI
-    .replace(/\r\n/g, "\n")    // Windows newlines
-    .replace(/\n/g, "<br />"); // HTML line breaks
+    .replace(/\\n/g, "\n")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n/g, "<br />");
 ---
 
-<section class="relative w-full min-h-[100svh] -mt-16">
-  <!-- Background image (always cover; tune crop via position) -->
-  <img
-  src="/images/hero/hero-bg-1.webp"
-  alt=""
-  width="1600"
-  height="900"
-  fetchpriority="high"
-  loading="eager"
-  decoding="async"
-  class="absolute inset-0 h-full w-full object-cover object-[70%_20%] md:object-center"
-/>
 
-  <!-- Readability overlay (gradient, not a flat gray slab) -->
-  <div
-    class="absolute inset-0
-           bg-[linear-gradient(180deg,rgba(0,0,0,0.35)_0%,rgba(0,0,0,0.45)_55%,rgba(0,0,0,0.55)_100%)]
-           md:bg-[linear-gradient(90deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.35)_52%,rgba(0,0,0,0.20)_100%)]"
-    aria-hidden="true"
-  ></div>
+<section class="relative w-full">
+  <div class="container">
+    <!-- DENSE hero block. Height is intentionally < full viewport so next section can "peek" via overlap -->
+    <div class="pt-12 md:pt-14 pb-20 md:pb-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-  <!-- Content (kept below sticky header height) -->
-  <div class="relative z-10">
-    <div class="container min-h-[100svh] pt-16 flex items-center">
-      <div class="max-w-3xl">
-        <h1
-          class="text-white font-semibold leading-[1.05]"
-          set:html={renderText(data.title)}
-        ></h1>
+        <!-- LEFT (60%) -->
+        <div class="lg:col-span-7">
+          <h1
+            data-reveal-item
+            class="text-balance"
+            set:html={renderText(data.title)}
+          ></h1>
 
-        {data.subtitle && (
-          <p
-            class="mt-6 text-white/80 text-lg max-w-2xl"
-            set:html={renderText(data.subtitle)}
-          ></p>
-        )}
+          {data.subtitle && (
+            <p
+              class="mt-7 text-[18px] md:text-[19px] leading-relaxed max-w-[58ch] text-[color:var(--muted)]"
+              set:html={renderText(data.subtitle)}
+            ></p>
+          )}
 
-        {data.cta?.href && data.cta?.label && (
-          <div class="mt-10">
-            <a
-              href={data.cta.href}
-              class="inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold
-                     bg-[color:var(--primary)] text-[color:var(--primary-contrast)]
-                     shadow-[var(--shadow-sm)] hover:brightness-[0.97] transition"
-            >
-              {data.cta.label}
-            </a>
+          {/* ONE CTA only (schema locked) */}
+          {data.cta?.href && data.cta?.label && (
+            <div class="mt-10">
+              <a
+                href={data.cta.href}
+                class="btn-primary no-underline hover:no-underline"
+              >
+                {data.cta.label}
+              </a>
+            </div>
+          )}
+        </div>
+
+        <!-- RIGHT (40%) — LCP image -->
+          <div class="lg:col-span-5">
+          <div class="visual-frame">
+            <div class="aspect-[4/5] w-full relative overflow-hidden">
+              <img
+                src="/images/yy/hero-sit.jpg"
+                alt="YY Sng working on a laptop"
+                width="960"
+                height="1200"
+                fetchpriority="high"
+                loading="eager"
+                decoding="async"
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                class="absolute inset-0 h-full w-full object-cover object-[55%_25%]"
+              />
+            </div>
           </div>
-        )}
+        </div>
+
       </div>
     </div>
   </div>

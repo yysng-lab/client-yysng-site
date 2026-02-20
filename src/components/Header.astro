@@ -1,101 +1,43 @@
 ---
-const nav = [
-  { label: "About", href: "/about/" },
-  { label: "Coaches", href: "/coaches/" },
-  { label: "Contact", href: "/contact/" },
-];
-
-const logoSrc = "/images/ezycoaching-logo.png";
-
-// Optional (still not hardcoded in index2.astro)
-const ctaHref = "/contact/";
-const ctaLabel = "Book a Conversation";
+/** Funnel logic */
+const ctaHref = "/u/yysng/";
+const ctaLabel = "Get in touch";
 ---
 
 <header class="sticky top-0 z-50">
   <!-- glass bar -->
-  <div class="backdrop-blur-md bg-[rgba(255,255,255,0.78)] border-b border-[color:var(--border)]">
-    <div class="container h-16 flex items-center justify-between gap-6">
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-3 no-underline hover:no-underline">
-        <img
-          src={logoSrc}
-          alt="EzyCoaching"
-          class="h-9 w-auto"
-          decoding="async"
-        />
+  <div class="backdrop-blur-md bg-[color:var(--bg)]/80 border-b border-[color:var(--border)]">
+    <div class="container h-16 flex items-center justify-between">
+      <!-- Text logo (Sora) -->
+      <a
+        href="/"
+        class="flex items-center no-underline hover:no-underline"
+        style="font-family: var(--font-headline);"
+        aria-label="yysng home"
+      >
+        <span class="text-[color:var(--ink)] text-[15px] md:text-[16px] font-semibold tracking-[-0.02em]">
+          yysng
+        </span>
+
+        {/* optional: subtle accent mark (remove if you want pure text) */}
+        <span
+          aria-hidden="true"
+          class="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--accent)] translate-y-[1px]"
+        ></span>
       </a>
 
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-8 text-sm">
-        {nav.map((i) => (
-          <a
-            href={i.href}
-            class="no-underline hover:no-underline text-[color:var(--muted)] hover:text-[color:var(--text)] transition-opacity"
-          >
-            {i.label}
-          </a>
-        ))}
-      </nav>
-
-      <!-- Desktop CTA -->
+      <!-- CTA (primary) -->
       <a
         href={ctaHref}
-        class="hidden md:inline-flex items-center justify-center rounded-[var(--radius-md)] px-4 py-2 text-sm font-semibold
-               bg-[color:var(--primary)] text-[color:var(--primary-contrast)]
-               shadow-[var(--shadow-sm)] hover:brightness-[0.97] no-underline hover:no-underline"
+        class="inline-flex items-center justify-center rounded-[var(--radius-md)]
+               px-4 py-2 text-sm font-semibold
+               bg-[color:var(--accent)] text-white
+               shadow-[var(--shadow-sm)]
+               hover:opacity-90 transition
+               no-underline hover:no-underline"
       >
         {ctaLabel}
       </a>
-
-      <!-- Mobile menu -->
-      <div class="md:hidden" x-data="{ open: false }">
-        <button
-          type="button"
-          class="inline-flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-2 text-sm font-semibold
-                 border border-[color:var(--border)] bg-[rgba(255,255,255,0.70)]
-                 text-[color:var(--text)]"
-          @click="open = !open"
-          :aria-expanded="open ? 'true' : 'false'"
-          aria-controls="mobile-nav"
-        >
-          Menu
-          <span aria-hidden="true" class="text-lg leading-none">›</span>
-        </button>
-
-        <div
-          id="mobile-nav"
-          x-show="open"
-          x-transition.opacity.duration.160ms
-          @click.outside="open = false"
-          class="absolute left-0 right-0 top-16 border-b border-[color:var(--border)]
-                 bg-[rgba(255,255,255,0.92)] backdrop-blur-md"
-        >
-          <div class="container py-4">
-            <div class="flex flex-col gap-3">
-              {nav.map((i) => (
-                <a
-                  href={i.href}
-                  class="py-2 text-sm font-medium text-[color:var(--text)] no-underline hover:no-underline"
-                  @click="open = false"
-                >
-                  {i.label}
-                </a>
-              ))}
-
-              <a
-                href={ctaHref}
-                class="mt-2 inline-flex items-center justify-center rounded-[var(--radius-md)] px-4 py-2 text-sm font-semibold
-                       bg-[color:var(--primary)] text-[color:var(--primary-contrast)]
-                       shadow-[var(--shadow-sm)] no-underline hover:no-underline"
-                @click="open = false"
-              >
-                {ctaLabel}
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </header>

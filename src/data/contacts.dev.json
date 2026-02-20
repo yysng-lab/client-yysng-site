@@ -1,0 +1,26 @@
+{
+  "contacts": [
+    {
+      "slug": "yysng",
+      "fullName": "Sng Yan Yuan",
+      "oneLiner": "I help leaders redesign how decisions and execution work so AI creates leverage instead of noise.",
+      "headline": "COO • AI Operator",
+      "email": "hello@yysng.me",
+      "linkedin": "https://www.linkedin.com/in/yanyuansng/",
+      "website": "https://yysng.me",
+      "whatsapp": "+65XXXXXXXX",
+      "photoUrl": "/images/profiles/yy.jpg",
+      "about": "",
+      "privateToken": "Rzq1v5fzxN2YMmibs8m8iCMemB6xb8bY",
+      "updatedAt": "2026-02-20T00:00:00Z",
+      "theme": {
+        "bg": "#ffffff",
+        "card": "rgba(255,255,255,0.92)",
+        "text": "#0b1220",
+        "muted": "rgba(11,18,32,0.72)",
+        "border": "rgba(24,73,121,0.12)",
+        "accent": "#184979"
+      }
+    }
+  ]
+}

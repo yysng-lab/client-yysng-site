@@ -24,82 +24,35 @@ async function readKVOrDefault<T>(key: string, fallback: T): Promise<T> {
 const hero = await readKVOrDefault<HeroContent>("hero", heroDefault);
 const cta  = await readKVOrDefault<CtaContent>("cta", ctaDefault);
 
+
 const homepageSEO = {
-  title: "Leadership Coaching for Decision Clarity | EzyCoaching",
+  title: "YY Sng — AI Operator",
   description:
-    "Coaching for leaders when decisions keep getting delayed. Clear the real friction in real time—so you move, not loop. Book a confidential conversation.",
-  canonical: "https://ezycoaching.com/",
-  ogTitle: "Leadership Coaching for Decision Clarity | EzyCoaching",
+    "I work across operations, strategy, and product — helping teams redesign execution so AI creates leverage instead of noise.",
+  canonical: "https://yysng.me/",
+  ogTitle: "AI doesn’t fail inside companies. Workflows do.",
   ogDescription:
-    "Coaching for leaders when decisions keep getting delayed. Clear the real friction in real time—so you move, not loop. Book a confidential conversation.",
+    "I work across operations, strategy, and product — helping teams redesign execution so AI creates leverage instead of noise.",
   ogType: "website",
-  // optional (only include if you have it):
-  // ogImage: "/images/og-default.png",
-  keywords: "leadership coaching for decision clarity"
+  keywords: "AI operator, workflow redesign, execution, operations, product, strategy",
 };
 
 const homepageJsonLd = [
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "EzyCoaching",
-    "url": "https://ezycoaching.com/",
-    "email": "breakthrough@ezycoaching.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "60 Paya Lebar Road, #06-28, Paya Lebar Square",
-      "addressLocality": "Singapore",
-      "postalCode": "409051",
-      "addressCountry": "SG"
-    }
+    "@type": "Person",
+    "name": "YY Sng",
+    "url": "https://yysng.me/",
+    "sameAs": ["https://www.linkedin.com/in/yysng/"],
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "EzyCoaching",
-    "url": "https://ezycoaching.com/",
-    "inLanguage": "en"
+    "name": "YY Sng",
+    "url": "https://yysng.me/",
+    "inLanguage": "en",
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "What is the first conversation like?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "A focused discussion about one real leadership situation you’re currently navigating. It’s a way to test whether coaching is the right lever."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this a sales pitch?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. There’s no obligation. If coaching fits, we’ll suggest next steps. If it doesn’t, we’ll tell you directly."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What if I don’t have a specific situation in mind?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "If nothing specific comes to mind, it may not be the right time yet. This works best when there’s a decision, dynamic, or recurring friction you keep returning to."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "When do leaders usually reach out?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Most leaders reach out when something keeps resurfacing and they’ve stopped ignoring it—often when pressure rises and decisions start looping."
-        }
-      }
-    ]
-  }
 ];
-
 ---
 
 <Base
@@ -112,286 +65,164 @@ const homepageJsonLd = [
   keywords={homepageSEO.keywords}
   jsonLd={homepageJsonLd}
 >
-<Fragment slot="head">
-    <link
-      rel="preload"
-      as="image"
-      href="/images/hero/hero-bg-1.webp"
-      type="image/webp"
-      fetchpriority="high"
-    />
-  </Fragment>
-
   <main>
 
-    <!-- HERO -->
+     <!-- HERO -->
     <Hero data={hero} />
 
+    <!-- 2) EXECUTION SPINE — OPEN (Operator Fold peek via overlap; no extra background effects) -->
+    <section
+      id="execution-spine"
+      class="-mt-12 md:-mt-16 pt-20 md:pt-24 pb-12 md:pb-14"
+    >
+      <div class="container">
+        <div class="max-w-3xl">
+          <h2 data-reveal-item class="text-balance">
+            Most teams use AI.<br />
+            Work still feels the same.
+          </h2>
 
-<!-- SECTION 2 — PROBLEM ENTRY -->
-<section class="section">
-  <div class="container">
-    <div class="split">
-      <!-- Text -->
-      <div class="split-text">
-      
-
-        <h2
-          data-reveal-item
-          class="mt-4 text-[color:var(--primary)] text-balance"
-        >
-          You’re not failing.<br />You’re hesitating.
-        </h2>
-
-        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-md">
-          It doesn’t look dramatic.<br />
-          It shows up as waiting, double-checking,<br />
-          or pushing the decision to next week.
-        </p>
-      </div>
-
-      <!-- Visual -->
-      <div class="split-visual">
-        <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
-          <div class="aspect-[16/11]">
-        <img
-          src="/images/home-sections/gen/section-2-2-960.webp"
-          srcset="
-            /images/home-sections/gen/section-2-2-640.webp 640w,
-            /images/home-sections/gen/section-2-2-960.webp 960w,
-            /images/home-sections/gen/section-2-2-1280.webp 1280w,
-            /images/home-sections/gen/section-2-2-1920.webp 1920w
-          "
-          sizes="(min-width: 1024px) 58vw, 100vw"
-          width="1280"
-          height="880"
-          alt="Leadership hesitation in everyday decisions"
-          class="h-full w-full object-cover"
-          loading="lazy"
-          decoding="async"
-        />
+          <div class="mt-12 space-y-3 text-[20px] md:text-[22px] leading-snug text-[color:var(--muted)]">
+            <p>Outputs increase.</p>
+            <p>Decisions stay slow.</p>
+            <p>Execution doesn’t compound.</p>
           </div>
+
+          <p class="mt-12 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
+            Inside operating companies, the pattern is consistent:
+          </p>
+
+          <p class="mt-3 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
+            AI changes outcomes only when workflows change with it.
+          </p>
+
+          <p class="mt-3 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
+            That redesign layer is the AI Operator lens
+          </p>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-    <!-- SECTION 3 — PATTERN RECOGNITION -->
-<section class="section">
+  <!-- PROOF SURFACES — OPEN (merged) -->
+<section id="work" class="pt-14 md:pt-18 pb-20 md:pb-24">
   <div class="container">
-    <div class="text-col">
-      <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
-        Most leadership friction doesn’t look like mistakes.<br />
-        It looks like delay.
-      </h2>
 
-      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-2xl">
-        Decisions loop.<br />
-        Conversations get postponed.<br />
-        Momentum slows without anyone calling it out.
-      </p>
-    </div>
-  </div>
-</section>
-
-    <!-- SECTION 4 — CONTEXT GAP -->
-    
-<!-- SECTION 4 — CONTEXT GAP -->
-<section class="section">
-  <div class="container">
-    <div class="visual-frame overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-[color:var(--border)] bg-white/70">
-      <div class="relative">
-        <!-- Background image -->
-        <div class="h-[380px] md:h-[460px]">
-          <img
-            src="/images/home-sections/gen/section-4-2-1280.webp"
-            srcset="
-              /images/home-sections/gen/section-4-2-640.webp 640w,
-              /images/home-sections/gen/section-4-2-960.webp 960w,
-              /images/home-sections/gen/section-4-2-1280.webp 1280w,
-              /images/home-sections/gen/section-4-2-1920.webp 1920w
-            "
-            sizes="(min-width: 1024px) 896px, 100vw"
-            width="1280"
-            height="736"
-            alt="Quiet moments after meetings where decisions stall"
-            class="h-full w-full object-cover"
-            loading="lazy"
-            decoding="async"
-          />
-
-        <!-- Dark overlay for readability -->
-        <div class="absolute inset-0 bg-black/25"></div>
-
-        <!-- Text overlay -->
-        <div class="absolute inset-0 flex items-center">
-          <!-- same horizontal rhythm as container -->
-          <div class="w-full px-6 md:px-12">
-            <!-- same text column width as other sections -->
-            <div class="text-col max-w-4xl">
-             
-
-              <h2
-                data-reveal-item
-                class="mt-4 text-white text-balance"
-              >
-                The hardest moments happen after the meeting ends.
-              </h2>
-
-              <p class="mt-6 text-[18px] leading-relaxed text-white/80 max-w-2xl">
-                After the advice.<br />
-                Before the decision.<br />
-                When no one is watching.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 5 — WHY SUPPORT DIDN’T STICK (compressed / denser) -->
-<section class="py-16 md:py-20">
-  <div class="container">
-    <!-- tighter column + tighter rhythm -->
-    <div class="max-w-[44ch]">
-      <h2
-        data-reveal-item
-        class="text-[color:var(--primary)] text-balance leading-tight"
-      >
-        Advice makes sense.<br />Then Monday happens.
-      </h2>
-
-      <p
-        class="mt-4 text-[17px] leading-snug text-[color:var(--muted)]"
-      >
-        Not because people forgot.<br />
-        Because real pressure didn’t look like the example.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- SECTION 6 — POSITIONING (expanded / more open, no image) -->
-<section class="py-24 md:py-32">
-  <div class="container">
-    <!-- wider column + more breathing room -->
+    <!-- Proof header -->
     <div class="max-w-3xl">
-      <h2
-        data-reveal-item
-        class="text-[color:var(--primary)] text-balance leading-tight"
-      >
-        We work with leaders inside real decisions.
+      <h2 data-reveal-item class="text-balance">
+        Real builds. Real operating decisions.
       </h2>
 
-      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)]">
-        Not in workshops.<br />
-        Not weeks later.<br />
-        When the moment actually shows up.
+      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[62ch]">
+        Live projects showing how AI changes execution when the system changes first.
       </p>
     </div>
-  </div>
-</section>
 
- <!-- SECTION 7 — TESTIMONIALS (editorial split) -->
-<section
-  class="py-24 md:py-32"
-  x-data="{
-    active: 0,
-    testimonials: [
-      {
-        name: 'Malcolm, Founder',
-        quote: 'To identify strengths quicker and leverage on them to excel.',
-        img: '/images/testimonials/malcolm.webp'
-      },
-      {
-        name: 'Keith, Founder',
-        quote: 'The simple shift completely changed my approach. It helped me prioritize better and gave me a clear path forward.',
-        img: '/images/testimonials/keith.webp'
-      },
-      {
-        name: 'Wan Ling, Financial Services COT',
-        quote: 'Mid-year fatigue brought uncertainty. The sessions gave me clarity to realign my focus and priorities.',
-        img: '/images/testimonials/wanling.webp'
-      },
-      {
-        name: 'Caroline Teng, Financial Services COT',
-        quote: 'Starting a new path after 31 years wasn’t easy — the coaching made a real difference',
-        img: '/images/testimonials/caroline.webp'
-      },
-      {
-        name: 'Benson Ng, Financial Services COT',
-        quote: 'She guided me to explore the values and beliefs that were holding me back from making decisive moves',
-        img: '/images/testimonials/benson.webp'
-      },
-    ]
-  }"
->
-  <div class="container">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-      <!-- LEFT: framing -->
-      <div class="lg:col-span-4">
-        <h2 data-reveal-item class="text-[color:var(--primary)] text-balance">
-          What changes when hesitation drops.
-        </h2>
+    <!-- Columns -->
+    <div class="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 items-start lg:divide-x lg:divide-[color:var(--border)]">
 
-        <p class="mt-6 text-[18px] leading-relaxed text-[color:var(--muted)]">
-          Clients don’t talk about motivation.<br />
-          They talk about movement.
+      <!-- Column 1 -->
+      <div class="flex flex-col lg:pr-8">
+        <h3 class="text-[color:var(--ink)] leading-tight">
+          <span class="whitespace-nowrap">AI-Ready</span><br />
+          <span class="whitespace-nowrap">Websites</span>
+        </h3>
+
+        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
+          Web systems designed to evolve with AI — not wait for the next redesign cycle.
         </p>
-      </div>
 
-      <!-- RIGHT: testimonials -->
-      <div class="lg:col-span-8">
-        <!-- avatars -->
-        <div class="flex items-center gap-6">
-          <template x-for="(t,i) in testimonials" :key="i">
-            <button
-              type="button"
-              @click="active = i"
-              @mouseenter="matchMedia('(hover:hover)').matches && (active = i)"
-              class="focus:outline-none"
-              :aria-label="`View testimonial from ${t.name}`"
+        <ul class="mt-7 space-y-2 text-sm">
+          <li>
+            <a
+              href="/case-studies/colin-mcc/"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
             >
-              <img
-                :src="t.img"
-                :alt="t.name"
-                width="240"
-                height="240"
-                decoding="async"
-                :loading="active === i ? 'eager' : 'lazy'"
-                :fetchpriority="active === i ? 'high' : 'auto'"
-                sizes="(min-width: 1024px) 96px, 56px"
-                class="rounded-full object-cover transition-all duration-300 ease-out"
-                :class="active === i
-                  ? 'h-24 w-24 opacity-100'
-                  : 'h-14 w-14 opacity-50'"
-              />
-            </button>
-          </template>
-        </div>
-
-        <!-- quote -->
-        <div class="mt-10 max-w-2xl">
-          <p
-            class="text-[22px] leading-snug text-[color:var(--text)]"
-            x-text="testimonials[active].quote"
-          ></p>
-
-          <p
-            class="mt-4 text-sm text-[color:var(--muted)]"
-            x-text="testimonials[active].name"
-          ></p>
-        </div>
+              <span>Colin MCC — homepage system</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/case-studies/ezycoaching/"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>EzyCoaching — conversion layer</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
       </div>
+
+      <!-- Column 2 -->
+      <div class="flex flex-col lg:px-8">
+        <h3 class="text-[color:var(--ink)] leading-tight">
+          <span class="whitespace-nowrap">AI In</span><br />
+          <span class="whitespace-nowrap">Live Operations</span>
+        </h3>
+
+        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
+          Implementation inside real teams — where constraints, not demos, shape the system.
+        </p>
+
+        <ul class="mt-7 space-y-2 text-sm">
+          <li>
+            <a
+              href="https://www.linkedin.com/in/yysng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>BD system — field loop notes</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/yysng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>Blog AI system — content ops model</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3 -->
+      <div class="flex flex-col lg:pl-8">
+        <h3 class="text-[color:var(--ink)] leading-tight">
+          <span class="whitespace-nowrap">Operator</span><br />
+          <span class="whitespace-nowrap">Link Surfaces</span>
+        </h3>
+
+        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
+          A fast, context-ready profile for leaders on the move.
+        </p>
+
+        <ul class="mt-7 space-y-2 text-sm">
+          <li>
+            <a
+              href="/u/yysng"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>View my profile</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/u/yysng/"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>Create yours</span><span aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
     </div>
   </div>
 </section>
 
-    <!-- FINAL CTA -->
+    <!-- 5) FINAL CTA — VERY OPEN (copy locked) -->
     <FinalCTA data={cta} />
   </main>
-
 </Base>

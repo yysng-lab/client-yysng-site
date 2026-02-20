@@ -1,119 +1,45 @@
 ---
-const { cta } = Astro.props;
-
-const logoSrc = "/images/ezycoaching-logo.png";
-
-const nav = [
-  { label: "About", href: "/about/" },
-  { label: "Coaches", href: "/coaches/" },
-  { label: cta?.button?.label ?? "Contact", href: cta?.button?.href ?? "/contact/" },
-];
-
-const socials = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/ezycoaching/" },
-  { label: "Instagram", href: "https://www.instagram.com/ezycoaching/" },
-  { label: "TikTok", href: "https://www.tiktok.com/@ezycoaching" },
-];
+const year = new Date().getFullYear();
+const linkedIn = "https://www.linkedin.com/in/yanyuansng/";
 ---
 
-<footer class="relative mt-24">
-  <!-- subtle footer wash (keeps it “light editorial”, not hard black) -->
-  <div class="pointer-events-none absolute inset-0 -z-10">
-    <div
-      class="absolute inset-0
-             bg-[linear-gradient(180deg,rgba(11,18,32,0.06)_0%,rgba(11,18,32,0.10)_65%,rgba(11,18,32,0.14)_100%)]"
-    ></div>
-  </div>
+<footer class="mt-24 border-t border-[color:var(--border)]">
+  <div class="container py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
 
-  <div class="container py-14">
-    <div class="grid gap-10 md:grid-cols-12">
-      <!-- Brand -->
-      <div class="md:col-span-5">
-        <a href="/" class="inline-flex items-center no-underline hover:no-underline">
-          <img
-            src={logoSrc}
-            alt="EzyCoaching"
-            class="h-11 w-auto"
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
+    <!-- Brand -->
+    <div class="flex flex-col gap-2">
+      <a
+        href="/"
+        class="no-underline hover:no-underline tracking-tight"
+        style="font-family: var(--font-headline);"
+      >
+        <span class="text-[color:var(--ink)] text-base font-[650]">
+          yysng
+        </span>
+      </a>
 
-        <p class="mt-5 text-sm text-[color:var(--muted)] max-w-sm">
-          Clarity creates movement.
-        </p>
-
-        <div class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-          {socials.map((s) => (
-            <a
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-[color:var(--muted)] hover:text-[color:var(--text)] no-underline hover:no-underline"
-            >
-              {s.label}
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Links -->
-      <div class="md:col-span-3">
-        <h6 class="text-sm font-semibold text-[color:var(--text)]">Useful Links</h6>
-        <ul class="mt-4 space-y-2 text-sm">
-          {nav.map((i) => (
-            <li>
-              <a
-                href={i.href}
-                class="text-[color:var(--muted)] hover:text-[color:var(--text)] no-underline hover:no-underline"
-              >
-                {i.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Contact -->
-      <div class="md:col-span-4">
-        <h6 class="text-sm font-semibold text-[color:var(--text)]">Contact</h6>
-
-        <a
-          class="mt-4 inline-block text-sm text-[color:var(--muted)] hover:text-[color:var(--text)] no-underline hover:no-underline"
-          href="mailto:breakthrough@ezycoaching.com"
-        >
-          breakthrough@ezycoaching.com
-        </a>
-
-        <div class="mt-8">
-          <h6 class="text-sm font-semibold text-[color:var(--text)]">Address</h6>
-          <p class="mt-3 text-sm text-[color:var(--muted)] leading-relaxed">
-            60 Paya Lebar Road<br />
-            #06-28<br />
-            Paya Lebar Square<br />
-            Singapore 409051
-          </p>
-        </div>
-
-        <div class="mt-8">
-          <a
-            href={cta?.button?.href ?? "/contact/"}
-            class="inline-flex items-center justify-center rounded-[var(--radius-md)]
-                   px-4 py-2 text-sm font-semibold
-                   bg-[color:var(--primary)] text-[color:var(--primary-contrast)]
-                   shadow-[var(--shadow-sm)] hover:brightness-[0.97]
-                   no-underline hover:no-underline"
-          >
-            {cta?.button?.label ?? "Let’s Talk"}
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-12 border-t border-[color:var(--border)] pt-6">
-      <p class="text-xs text-[color:var(--muted)]">
-        Copyright © 2026 | 3 MASTERS PTE. LTD. | All rights reserved.
+      <p class="text-sm text-[color:var(--muted)]">
+        Operator-grade systems. Practical outcomes.
       </p>
     </div>
+
+    <!-- Right side -->
+    <div class="flex flex-col md:items-end gap-3 text-sm">
+
+      <a
+        href={linkedIn}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-[color:var(--muted)] hover:text-[color:var(--ink)] transition-colors no-underline hover:no-underline"
+      >
+        LinkedIn
+      </a>
+
+      <p class="text-xs text-[color:var(--muted)]">
+        © {year} YY Sng. All rights reserved.
+      </p>
+
+    </div>
+
   </div>
 </footer>
