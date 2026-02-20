@@ -22,9 +22,19 @@ function sanitize(v?: string): string {
 
 function buildVcard(opts: { contact: ContactRecord; includeTel: boolean }): string {
   const c = opts.contact;
+
+  // Best-effort parse for N:
+  const parts = sanitize(c.fullName).split(/\s+/).filter(Boolean);
+  const first = parts[0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1] : "";
+  const middle = parts.length > 2 ? parts.slice(1, -1).join(" ") : "";
+
   const lines: string[] = [];
   lines.push("BEGIN:VCARD");
   lines.push("VERSION:3.0");
+
+  // Structured name + formatted name
+  lines.push(`N:${sanitize(last)};${sanitize(first)};${sanitize(middle)};;`);
   lines.push(`FN:${sanitize(c.fullName)}`);
 
   if (opts.includeTel && c.phone) {
@@ -35,10 +45,12 @@ function buildVcard(opts: { contact: ContactRecord; includeTel: boolean }): stri
 
   if (c.company) lines.push(`ORG:${sanitize(c.company)}`);
   if (c.headline) lines.push(`TITLE:${sanitize(c.headline)}`);
+
+  // URL logic (optional improvement if you want website→linkedin fallback)
   if (c.website) lines.push(`URL:${sanitize(c.website)}`);
 
   lines.push("END:VCARD");
-  return lines.join("\r\n");
+  return lines.join("\r\n") + "\r\n";
 }
 
 async function getContact(slug: string, env: any): Promise<ContactRecord | null> {

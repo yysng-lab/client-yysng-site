@@ -156,16 +156,20 @@ const oneLiner =
             </div>
 
             <!-- Single CTA -->
-            <div class="mt-7">
-              <a
-                href={vcardHref}
-                class="btn-primary w-full inline-flex items-center justify-center gap-2
-                       no-underline hover:no-underline"
-              >
-                Save contact
-                <span aria-hidden="true">→</span>
-              </a>
-            </div>
+                <div class="mt-7">
+                <a
+                    href={vcardHref}
+                    class="btn-primary w-full inline-flex items-center justify-center gap-2
+                        no-underline hover:no-underline"
+                >
+                    Save contact
+                    <span aria-hidden="true">→</span>
+                </a>
+
+                <p class="mt-2 text-xs text-center text-[color:var(--muted)]">
+                    to stay connected
+                </p>
+                </div>
 
             <!-- About (optional) -->
             {contact.about && (
