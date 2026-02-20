@@ -1,6 +1,6 @@
 // functions/api/vcard.ts
 import type { PagesFunction } from "@cloudflare/workers-types";
-import contactsDev from "../../src/data/contacts.dev.json";
+import contactsDev from "../../data/contacts.dev.json";
 
 type ContactRecord = {
   slug: string;
