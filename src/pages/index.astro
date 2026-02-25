@@ -34,6 +34,7 @@ const homepageSEO = {
   ogDescription:
     "I work across operations, strategy, and product — helping teams redesign execution so AI creates leverage instead of noise.",
   ogType: "website",
+  ogImage: "https://yysng.me/images/yy/og-main.webp", 
   keywords: "AI operator, workflow redesign, execution, operations, product, strategy",
 };
 
@@ -62,6 +63,7 @@ const homepageJsonLd = [
   ogTitle={homepageSEO.ogTitle}
   ogDescription={homepageSEO.ogDescription}
   ogType={homepageSEO.ogType}
+  ogImage={homepageSEO.ogImage}  <!-- 👈 ADD THIS -->
   keywords={homepageSEO.keywords}
   jsonLd={homepageJsonLd}
 >
@@ -78,14 +80,14 @@ const homepageJsonLd = [
       <div class="container">
         <div class="max-w-3xl">
           <h2 data-reveal-item class="text-balance">
-            Most teams use AI.<br />
-            Work still feels the same.
+            Most teams add AI to existing workflows.<br />
           </h2>
 
           <div class="mt-12 space-y-3 text-[20px] md:text-[22px] leading-snug text-[color:var(--muted)]">
-            <p>Outputs increase.</p>
-            <p>Decisions stay slow.</p>
-            <p>Execution doesn’t compound.</p>
+            <p>Work speeds up.</p>
+            <p>But decisions still bottleneck at the same places.</p>
+            <p>Junior staff execute faster.</p>
+            <p>Senior judgment doesn't scale.</p>
           </div>
 
           <p class="mt-12 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
@@ -97,122 +99,135 @@ const homepageJsonLd = [
           </p>
 
           <p class="mt-3 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
-            That redesign layer is the AI Operator lens
+            That's where I work.
           </p>
         </div>
       </div>
     </section>
 
-  <!-- PROOF SURFACES — OPEN (merged) -->
+ <!-- WHAT I BUILD — merged (no embeds, tight link rows) -->
 <section id="work" class="pt-14 md:pt-18 pb-20 md:pb-24">
   <div class="container">
 
-    <!-- Proof header -->
+    <!-- Header -->
     <div class="max-w-3xl">
-      <h2 data-reveal-item class="text-balance">
+      <p class="text-sm font-semibold tracking-wide text-[color:var(--muted)]">
+        What I Build
+      </p>
+
+      <h2 data-reveal-item class="mt-3 text-balance">
         Real builds. Real operating decisions.
       </h2>
-
-      <p class="mt-8 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[62ch]">
-        Live projects showing how AI changes execution when the system changes first.
-      </p>
     </div>
 
-    <!-- Columns -->
-    <div class="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 items-start lg:divide-x lg:divide-[color:var(--border)]">
+    <!-- Two blocks -->
+    <div class="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0 items-start">
 
-      <!-- Column 1 -->
-      <div class="flex flex-col lg:pr-8">
+      <!-- Block 1: AI-Ready Systems -->
+      <div class="lg:col-span-5 lg:pr-10">
         <h3 class="text-[color:var(--ink)] leading-tight">
-          <span class="whitespace-nowrap">AI-Ready</span><br />
-          <span class="whitespace-nowrap">Websites</span>
+          <span class="whitespace-nowrap">AI-Ready Systems</span>
         </h3>
 
-        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
-          Web systems designed to evolve with AI — not wait for the next redesign cycle.
+        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[52ch]">
+          Websites and workflows designed to evolve with AI, not wait for redesigns.
         </p>
 
         <ul class="mt-7 space-y-2 text-sm">
           <li>
             <a
-              href="/case-studies/colin-mcc/"
+              href="https://ezycoaching.client.seekingrowth.com/"
               class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
             >
-              <span>Colin MCC — homepage system</span><span aria-hidden="true">→</span>
+              <span>EzyCoaching — AI-ready website. Updates messaging in minutes, not redesign cycles.</span>
+              <span aria-hidden="true">→</span>
             </a>
           </li>
+
           <li>
             <a
-              href="/case-studies/ezycoaching/"
+              href="https://client-colinmcc-site.seekingrowth.com/"
               class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
             >
-              <span>EzyCoaching — conversion layer</span><span aria-hidden="true">→</span>
+              <span>Colin MCC — Personal website, AI-assisted. From idea to live in one session.</span>
+              <span aria-hidden="true">→</span>
             </a>
           </li>
-        </ul>
-      </div>
 
-      <!-- Column 2 -->
-      <div class="flex flex-col lg:px-8">
-        <h3 class="text-[color:var(--ink)] leading-tight">
-          <span class="whitespace-nowrap">AI In</span><br />
-          <span class="whitespace-nowrap">Live Operations</span>
-        </h3>
-
-        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
-          Implementation inside real teams — where constraints, not demos, shape the system.
-        </p>
-
-        <ul class="mt-7 space-y-2 text-sm">
-          <li>
-            <a
-              href="https://www.linkedin.com/in/yysng/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>BD system — field loop notes</span><span aria-hidden="true">→</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.linkedin.com/in/yysng/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>Blog AI system — content ops model</span><span aria-hidden="true">→</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Column 3 -->
-      <div class="flex flex-col lg:pl-8">
-        <h3 class="text-[color:var(--ink)] leading-tight">
-          <span class="whitespace-nowrap">Operator</span><br />
-          <span class="whitespace-nowrap">Link Surfaces</span>
-        </h3>
-
-        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[46ch]">
-          A fast, context-ready profile for leaders on the move.
-        </p>
-
-        <ul class="mt-7 space-y-2 text-sm">
-          <li>
-            <a
-              href="/u/yysng"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>View my profile</span><span aria-hidden="true">→</span>
-            </a>
-          </li>
           <li>
             <a
               href="/u/yysng/"
               class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
             >
-              <span>Create yours</span><span aria-hidden="true">→</span>
+              <span>Operator Link — Linktree for leaders, not influencers. Create yours</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Divider -->
+      <div class="hidden lg:block lg:col-span-1">
+        <div class="h-full w-px bg-[color:var(--border)] mx-auto"></div>
+      </div>
+
+      <!-- Block 2: Live Operating Labs -->
+      <div class="lg:col-span-6 lg:pl-10">
+        <h3 class="text-[color:var(--ink)] leading-tight">
+          <span class="whitespace-nowrap">Live Operating Labs</span>
+        </h3>
+
+        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[52ch]">
+          Real implementations inside Laimi (travel startup, Vietnam operations).
+        </p>
+
+        <!-- Tight link rows (no embeds) -->
+        <ul class="mt-7 space-y-2 text-sm">
+          <li>
+            <a
+              href="https://www.linkedin.com/posts/yanyuansng_ran-a-linkedin-content-system-on-chatgpt-activity-7431940958671294464-jSQv"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>ChatGPT plateau → Claude rebuild (2-month system stress test) →</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="https://www.linkedin.com/posts/yanyuansng_inside-my-ai-playbook-what-im-actually-activity-7418804394982514688-oK12"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>Inside my AI playbook: what I'm actually building →</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="https://www.linkedin.com/posts/yanyuansng_three-systems-same-ai-stack-same-blind-activity-7432212761679650817-AlsK"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>Three systems running. All producing. None learning. →</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+
+          <li class="pt-2">
+            <a
+              href="https://www.linkedin.com/in/yanyuansng/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              <span>More builds on LinkedIn</span>
+              <span aria-hidden="true">→</span>
             </a>
           </li>
         </ul>
