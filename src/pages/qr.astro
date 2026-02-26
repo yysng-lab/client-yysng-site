@@ -1,12 +1,6 @@
 ---
-import contactsDev from "../data/contacts.dev.json";
+// src/pages/qr.astro
 import qrScriptUrl from "../scripts/qr-generator.ts?url";
-
-const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
-  slug: c.slug,
-  fullName: c.fullName,
-  privateToken: c.privateToken ?? "",
-}));
 ---
 
 <html lang="en">
@@ -19,7 +13,7 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
   <body style="font-family: system-ui; padding: 24px; max-width: 980px; margin: 0 auto;">
     <h1 style="margin-bottom: 8px;">QR Generator</h1>
     <p style="margin-top: 0; opacity: .7;">
-      Public QR = safe to share. Offline QR = includes token (treat as private).
+      Public QR = safe to share. Offline QR = requires manual token input (treat as private).
     </p>
 
     <!-- Controls -->
@@ -27,9 +21,7 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
       <label>
         Select contact:
         <select id="contact" style="margin-left: 8px; padding: 6px 10px;">
-          {contacts.map((c) => (
-            <option value={c.slug}>{c.fullName} ({c.slug})</option>
-          ))}
+          <option value="">Loading…</option>
         </select>
       </label>
 
@@ -40,6 +32,16 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
           <option value="offline">offline</option>
         </select>
       </label>
+
+      <label id="tokenWrap" style="display:none;">
+        Token:
+        <input
+          id="token"
+          type="password"
+          placeholder="paste token"
+          style="margin-left: 8px; padding: 6px 10px; width: 260px;"
+        />
+      </label>
     </div>
 
     <!-- Layout -->
@@ -48,8 +50,12 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
         <!-- QR -->
         <div>
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
-          <canvas id="qr" width="320" height="320"
-            style="border: 1px solid #ddd; border-radius: 12px;"></canvas>
+          <canvas
+            id="qr"
+            width="320"
+            height="320"
+            style="border: 1px solid #ddd; border-radius: 12px;"
+          ></canvas>
 
           <div style="margin-top: 12px; display:flex; gap: 10px; flex-wrap: wrap;">
             <button id="downloadPng" style="padding: 8px 12px;">Download PNG</button>
@@ -60,19 +66,18 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
         <!-- URL -->
         <div style="min-width: 320px; flex: 1;">
           <div style="font-weight:600; margin-bottom: 10px;">Target URL</div>
-          <code id="url"
-            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"></code>
+          <code
+            id="url"
+            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"
+          ></code>
 
           <div style="margin-top: 10px; font-size: 13px; opacity:.75;">
             Tip: Use <strong>public</strong> for printed cards.
-            Use <strong>offline</strong> only for your NFC / controlled sharing.
+            Use <strong>offline</strong> only for NFC / controlled sharing.
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Expose contacts to client -->
-    <script is:inline set:html={`window.__CONTACTS__ = ${JSON.stringify(contacts)};`}></script>
 
     <!-- ✅ Bundled client script (works on prod) -->
     <script type="module" src={qrScriptUrl}></script>

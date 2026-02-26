@@ -32,16 +32,13 @@ export type ContactRecord = {
 type DevFile = { contacts: ContactRecord[] };
 
 async function getFromDevFile(slug: string): Promise<ContactRecord | null> {
-  // Only attempt dev JSON import in local dev
   if (!import.meta.env.DEV) return null;
 
   try {
     const mod = await import("../data/contacts.dev.json");
     const data = (mod.default ?? mod) as unknown as DevFile;
-    const hit = data?.contacts?.find((c) => c.slug === slug);
-    return hit ?? null;
+    return data?.contacts?.find((c) => c.slug === slug) ?? null;
   } catch {
-    // dev file missing is OK (e.g. not created yet)
     return null;
   }
 }
@@ -50,13 +47,10 @@ export async function getContactBySlug(opts: {
   slug: string;
   env?: Record<string, any>;
 }): Promise<ContactRecord | null> {
-  const { slug, env } = opts;
-  const safeSlug = String(slug || "").trim();
+  const safeSlug = String(opts.slug || "").trim();
   if (!safeSlug) return null;
 
-  // --- PROD (KV) ---
-  // Binding name: CONTACTS_KV
-  const kv = env?.CONTACTS_KV;
+  const kv = opts.env?.CONTACTS_KV;
   if (kv) {
     const raw = await kv.get(`contact:${safeSlug}`);
     if (!raw) return null;
@@ -67,7 +61,7 @@ export async function getContactBySlug(opts: {
     }
   }
 
-  // --- DEV fallback (file) ---
+  // Only fallback in DEV (never in prod)
   return await getFromDevFile(safeSlug);
 }
 
