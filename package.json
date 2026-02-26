@@ -15,7 +15,8 @@
     "@yysng/astro-boilerplate": "1.1.36",
     "astro": "^5.16.6",
     "dotenv": "^17.2.3",
-    "openai": "^6.15.0"
+    "openai": "^6.15.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^12.6.12",
