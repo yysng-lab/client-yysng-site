@@ -1,5 +1,6 @@
 ---
 import contactsDev from "../data/contacts.dev.json";
+import qrScriptUrl from "../scripts/qr-generator.ts?url";
 
 const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
   slug: c.slug,
@@ -44,13 +45,11 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
     <!-- Layout -->
     <div style="margin-top: 24px;">
       <div style="display:flex; gap: 32px; flex-wrap: wrap; align-items:flex-start;">
-        
         <!-- QR -->
         <div>
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
           <canvas id="qr" width="320" height="320"
-            style="border: 1px solid #ddd; border-radius: 12px;">
-          </canvas>
+            style="border: 1px solid #ddd; border-radius: 12px;"></canvas>
 
           <div style="margin-top: 12px; display:flex; gap: 10px; flex-wrap: wrap;">
             <button id="downloadPng" style="padding: 8px 12px;">Download PNG</button>
@@ -62,25 +61,20 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
         <div style="min-width: 320px; flex: 1;">
           <div style="font-weight:600; margin-bottom: 10px;">Target URL</div>
           <code id="url"
-            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;">
-          </code>
+            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"></code>
 
           <div style="margin-top: 10px; font-size: 13px; opacity:.75;">
-            Tip: Use <strong>public</strong> for printed cards.  
+            Tip: Use <strong>public</strong> for printed cards.
             Use <strong>offline</strong> only for your NFC / controlled sharing.
           </div>
         </div>
-
       </div>
     </div>
 
     <!-- Expose contacts to client -->
-    <script
-      is:inline
-      set:html={`window.__CONTACTS__ = ${JSON.stringify(contacts)};`}
-    ></script>
+    <script is:inline set:html={`window.__CONTACTS__ = ${JSON.stringify(contacts)};`}></script>
 
-    <!-- Bundled client script -->
-    <script type="module" src="/src/scripts/qr-generator.ts"></script>
+    <!-- ✅ Bundled client script (works on prod) -->
+    <script type="module" src={qrScriptUrl}></script>
   </body>
 </html>
