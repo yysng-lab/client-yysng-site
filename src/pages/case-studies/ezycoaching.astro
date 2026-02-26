@@ -1,0 +1,273 @@
+---
+import Base from "../../layouts/Base.astro";
+
+export const prerender = false;
+
+// ---------------- SEO ----------------
+const pageTitle =
+  "EzyCoaching Case Study | Website Architecture Built for Rapid Positioning Shifts";
+
+const pageDescription =
+  "How EzyCoaching redesigned its website architecture to support weekly messaging evolution, improve PageSpeed from 52 to 96, and eliminate hosting costs.";
+
+const canonical = "https://yysng.me/case-studies/ezycoaching";
+const ogImage = "https://yysng.me/images/yy/og-ezycoaching.webp";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: pageTitle,
+    description: pageDescription,
+    author: {
+      "@type": "Person",
+      name: "YY Sng",
+      url: "https://yysng.me",
+    },
+    about: {
+      "@type": "Organization",
+      name: "EzyCoaching",
+    },
+    mainEntityOfPage: canonical,
+  },
+];
+---
+
+<Base
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  ogTitle={pageTitle}
+  ogDescription={pageDescription}
+  ogType="article"
+  ogImage={ogImage}
+  jsonLd={jsonLd}
+>
+  <main class="pt-16 md:pt-20 pb-20 md:pb-24 text-[15.5px] md:text-[16px]">
+    <div class="container">
+      <!-- CONTENT RAIL (keeps everything tight on large screens) -->
+      <div class="mx-auto max-w-3xl">
+        <!-- HERO -->
+        <header class="pt-8 md:pt-10 pb-8 md:pb-10">
+          <p class="text-sm font-semibold tracking-wide text-[color:var(--muted)]">
+            Case study
+          </p>
+
+          <h1 class="mt-3 text-balance text-[34px] md:text-[40px] leading-[1.12] tracking-tight font-[650]">
+            EzyCoaching: When Positioning Changes Faster Than Your Website
+          </h1>
+
+          <p class="mt-5 text-[18px] md:text-[19px] leading-[1.6] text-[color:var(--muted)] max-w-[60ch]">
+            Leadership coaching · 3-person team
+          </p>
+
+          <!-- Summary card -->
+          <div class="mt-8 rounded-[18px] border border-[color:var(--border)] bg-[color:var(--surface)] shadow-[var(--shadow-sm)]">
+            <dl class="divide-y divide-[color:var(--border)]">
+              <div class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-2 sm:gap-6 px-5 py-4">
+                <dt class="text-sm font-semibold text-[color:var(--ink)]">Challenge</dt>
+                <dd class="text-sm leading-relaxed text-[color:var(--muted)]">
+                  Website couldn’t keep up with weekly messaging shifts
+                </dd>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-2 sm:gap-6 px-5 py-4">
+                <dt class="text-sm font-semibold text-[color:var(--ink)]">Solution</dt>
+                <dd class="text-sm leading-relaxed text-[color:var(--muted)]">
+                  Architecture designed for change
+                </dd>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-2 sm:gap-6 px-5 py-4">
+                <dt class="text-sm font-semibold text-[color:var(--ink)]">Result</dt>
+                <dd class="text-sm leading-relaxed text-[color:var(--muted)]">
+                  Updates in minutes, not weeks. PageSpeed 52 → 96. Hosting cost → $0.
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </header>
+
+        <!-- PROBLEM -->
+        <section class="mt-12 md:mt-14">
+          <h2 class="text-[24px] md:text-[28px] font-[650] tracking-tight leading-[1.25]">
+            The Problem
+          </h2>
+
+          <p class="mt-5 leading-relaxed text-[color:var(--muted)]">
+            EzyCoaching’s positioning evolved based on market feedback — sometimes weekly.
+          </p>
+
+          <div class="callout mt-6">
+            <p class="callout-title">Real cost</p>
+            <p class="callout-body">
+              Market feedback couldn’t become messaging updates fast enough.
+            </p>
+          </div>
+
+          <div class="problem-grid mt-7">
+            <div class="panel">
+              <h3 class="panel-title">Old workflow</h3>
+              <ol class="step-list mt-5">
+                <li><span class="step-num">1</span><span>Call developer</span></li>
+                <li><span class="step-num">2</span><span>Edit, test mobile, deploy</span></li>
+                <li><span class="step-num">3</span><span>Time: ~2 weeks per update</span></li>
+              </ol>
+            </div>
+
+            <div class="panel">
+              <h3 class="panel-title">What broke</h3>
+              <ol class="step-list mt-5">
+                <li><span class="step-num">1</span><span>Slow performance</span></li>
+                <li><span class="step-num">2</span><span>Hosting fees mounting</span></li>
+                <li><span class="step-num">3</span><span>Inconsistent formatting across pages</span></li>
+                <li><span class="step-num">4</span><span>Mobile layouts needed manual maintenance</span></li>
+                <li><span class="step-num">5</span><span>Coach profiles took weeks to add</span></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section class="mt-12 md:mt-14">
+          <h2 class="text-[24px] md:text-[28px] font-[650] tracking-tight leading-[1.25]">
+            Process Shift
+          </h2>
+
+          <div class="timeline mt-7">
+            <div class="timeline-col">
+              <p class="timeline-label">Before</p>
+              <ol class="timeline-steps">
+                <li>Market feedback</li>
+                <li>Developer edits</li>
+                <li>Two-week cycle</li>
+                <li>Website update</li>
+              </ol>
+            </div>
+
+            <!-- CENTER ARROW -->
+            <div class="timeline-arrow" aria-hidden="true">→</div>
+
+            <div class="timeline-col timeline-col--after">
+              <p class="timeline-label timeline-label--after">After</p>
+              <ol class="timeline-steps">
+                <li>Market feedback</li>
+                <li>Prompt</li>
+                <li>Review</li>
+                <li>Publish (same day)</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHAT WAS BUILT -->
+        <section class="mt-12 md:mt-14">
+          <h2 class="text-[24px] md:text-[28px] font-[650] tracking-tight leading-[1.25]">
+            What Was Built
+          </h2>
+
+          <p class="mt-5 leading-relaxed text-[color:var(--muted)]">
+            Architecture built to expect change — not resist it.
+          </p>
+
+          <div class="callout mt-7">
+            <p class="callout-title">V1 capability</p>
+            <p class="callout-body">
+              AI-editor interface for instant hero + CTA updates. Prompt → Review → Publish.
+            </p>
+          </div>
+
+          <h3 class="mt-10 text-[18px] md:text-[20px] font-[650] tracking-tight">
+            Technical Improvements
+          </h3>
+
+          <dl class="stat-grid mt-5">
+            <div class="stat">
+              <dt>PageSpeed</dt>
+              <dd><span class="from">52</span><span class="arrow">→</span><span class="to">96</span></dd>
+            </div>
+            <div class="stat">
+              <dt>Hosting</dt>
+              <dd><span class="from">Monthly fees</span><span class="arrow">→</span><span class="to">$0</span></dd>
+            </div>
+            <div class="stat">
+              <dt>Email</dt>
+              <dd><span class="from">Monthly fees</span><span class="arrow">→</span><span class="to">$0</span></dd>
+            </div>
+            <div class="stat">
+              <dt>Structure</dt>
+              <dd><span class="from">Brochure</span><span class="arrow">→</span><span class="to">4-page funnel</span></dd>
+            </div>
+          </dl>
+        </section>
+
+        <!-- BEFORE AFTER -->
+        <section class="mt-12 md:mt-14">
+          <h2 class="text-[24px] md:text-[28px] font-[650] tracking-tight leading-[1.25]">
+            Before → After
+          </h2>
+
+          <!-- Constrained compare table (prevents huge white gaps) -->
+          <div class="compare mt-7">
+            <div class="compare-head">
+              <div>Before</div>
+              <div>After</div>
+            </div>
+
+            <div class="compare-row">
+              <div>2 weeks per update</div>
+              <div>Minutes (same day)</div>
+            </div>
+            <div class="compare-row">
+              <div>PageSpeed 52</div>
+              <div>PageSpeed 96</div>
+            </div>
+            <div class="compare-row">
+              <div>Monthly hosting/email fees</div>
+              <div>$0 recurring costs</div>
+            </div>
+            <div class="compare-row">
+              <div>Developer queue</div>
+              <div>Founder-controlled updates</div>
+            </div>
+          </div>
+
+          <div class="callout mt-7">
+            <p class="callout-title">Real change</p>
+            <p class="callout-body">
+              The gap between understanding and implementation closed.
+            </p>
+          </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="mt-14 md:mt-16 border-t border-[color:var(--border)] pt-10">
+          <h3 class="text-[18px] md:text-[20px] font-[650] leading-snug">
+            See It Live
+          </h3>
+
+          <p class="mt-4">
+            <a
+              href="https://www.ezycoaching.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              Explore EzyCoaching →
+            </a>
+          </p>
+
+          <p class="mt-8 text-[color:var(--muted)]">
+            Similar challenge?
+            <a
+              href="/card/yysng"
+              class="ml-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
+            >
+              Start a conversation →
+            </a>
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+</Base>

@@ -44,6 +44,8 @@ const {
     <meta property="og:description" content={Astro.props.ogDescription ?? description} />
     <meta property="og:type" content={Astro.props.ogType ?? "website"} />
     <meta property="og:url" content={Astro.props.canonical ?? Astro.url.href} />
+    <meta property="og:locale" content="en_SG" />
+    <meta property="og:site_name" content="YY Sng" />
     {Astro.props.ogImage && <meta property="og:image" content={Astro.props.ogImage} />}
 
     {/* Optional: keywords */}
