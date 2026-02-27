@@ -9,14 +9,16 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
-  noChrome?: boolean;   // 👈 add this
+  noChrome?: boolean;
+  noindex?: boolean;
 }
 
 const {
   title = "YY Sng",
   description = "Operator-grade builder. Calm systems. Practical outcomes.",
   canonical,
-  noChrome = false, 
+  noChrome = false,
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -55,6 +57,9 @@ const {
     {Array.isArray(Astro.props.jsonLd) && Astro.props.jsonLd.map((obj) => (
       <script type="application/ld+json" set:html={JSON.stringify(obj)} />
     ))}
+    {noindex && (
+      <meta name="robots" content="noindex, nofollow" />
+    )}
 
     <slot name="head" />
   </head>

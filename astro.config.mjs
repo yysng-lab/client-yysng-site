@@ -10,7 +10,11 @@ export default defineConfig({
 
   integrations: [
   sitemap({
-    filter: (page) => !page.includes('/qr'),
+    filter: (page) => {
+      if (page.includes('/qr')) return false;
+      if (page.includes('/ai-editor')) return false;
+      return true;
+    },
   }),
 ],
 
