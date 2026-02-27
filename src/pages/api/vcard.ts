@@ -20,6 +20,14 @@ function bestEffortN(fullName?: string) {
   return { family, given };
 }
 
+function sanitizeTel(v?: string) {
+  const raw = String(v ?? "").trim();
+  if (!raw) return "";
+  const plus = raw.startsWith("+") ? "+" : "";
+  const digits = raw.replace(/[^\d]/g, "");
+  return digits ? plus + digits : "";
+}
+
 export const GET: APIRoute = async ({ url, locals }) => {
   const slug = url.searchParams.get("slug") ?? "";
   const mode = (url.searchParams.get("m") ?? "public").toLowerCase();
@@ -48,10 +56,13 @@ export const GET: APIRoute = async ({ url, locals }) => {
   const { family, given } = bestEffortN(contact.fullName);
   lines.push(`N:${escVCard(family)};${escVCard(given)};;;`);
 
-  // TEL (offline only)
-  if (tokenValid && contact.phone) {
-    lines.push(`TEL;TYPE=CELL:${escVCard(contact.phone)}`);
-  }
+    // TEL (offline only)
+    if (tokenValid) {
+      const tel = sanitizeTel(contact.phone);
+      if (tel) {
+        lines.push(`TEL;TYPE=CELL,VOICE:${escVCard(tel)}`);
+      }
+    }
 
   // EMAIL + TITLE
   if (contact.email) lines.push(`EMAIL:${escVCard(contact.email)}`);
