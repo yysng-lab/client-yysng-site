@@ -11,6 +11,15 @@ function escVCard(value: string) {
     .trim();
 }
 
+function bestEffortN(fullName?: string) {
+  const parts = String(fullName ?? "").trim().split(/\s+/).filter(Boolean);
+  // vCard wants: N:Family;Given;Additional;Prefix;Suffix
+  // Best-effort: first token = family, rest = given (matches your earlier approach)
+  const family = parts.length >= 2 ? parts[0] : "";
+  const given = parts.length >= 2 ? parts.slice(1).join(" ") : parts[0] ?? "";
+  return { family, given };
+}
+
 export const GET: APIRoute = async ({ url, locals }) => {
   const slug = url.searchParams.get("slug") ?? "";
   const mode = (url.searchParams.get("m") ?? "public").toLowerCase();
@@ -20,26 +29,23 @@ export const GET: APIRoute = async ({ url, locals }) => {
 
   const env = (locals as any)?.runtime?.env ?? {};
   const contact = await getContactBySlug({ slug, env });
-
   if (!contact) return new Response("Not found", { status: 404 });
 
-  // TEL only when mode=offline AND token matches exactly
+  // ✅ Global offline key (no per-contact tokens)
+  const offlineKey = String(env?.OFFLINE_KEY ?? "").trim();
   const tokenValid =
     mode === "offline" &&
-    typeof contact.privateToken === "string" &&
-    contact.privateToken.length >= 20 &&
-    token === contact.privateToken;
+    token.length >= 10 &&
+    offlineKey.length >= 10 &&
+    token === offlineKey;
 
   const lines: string[] = ["BEGIN:VCARD", "VERSION:3.0"];
 
   // FN
   if (contact.fullName) lines.push(`FN:${escVCard(contact.fullName)}`);
 
-  // N (best-effort)
-  // vCard wants: N:Family;Given;Additional;Prefix;Suffix
-  const parts = String(contact.fullName ?? "").trim().split(/\s+/).filter(Boolean);
-  const family = parts.length >= 2 ? parts[0] : "";
-  const given = parts.length >= 2 ? parts.slice(1).join(" ") : parts[0] ?? "";
+  // N
+  const { family, given } = bestEffortN(contact.fullName);
   lines.push(`N:${escVCard(family)};${escVCard(given)};;;`);
 
   // TEL (offline only)
@@ -55,8 +61,7 @@ export const GET: APIRoute = async ({ url, locals }) => {
   const primaryUrl = contact.website || contact.linkedin;
   if (primaryUrl) lines.push(`URL:${escVCard(primaryUrl)}`);
 
-  // ✅ NOTE: include oneLiner (always) + LinkedIn (always, if exists)
-  // (Many contact apps display NOTE; safest way for v1)
+  // NOTE: oneLiner + LinkedIn (always if exists)
   const notes: string[] = [];
   if (contact.oneLiner) notes.push(contact.oneLiner);
   if (contact.linkedin) notes.push(`LinkedIn: ${contact.linkedin}`);
