@@ -1,28 +1,60 @@
+// src/pages/api/contacts-list.ts
 import type { APIRoute } from "astro";
+import type { ContactRecord } from "../../lib/contacts";
 
 export const GET: APIRoute = async ({ locals }) => {
   const env = (locals as any)?.runtime?.env ?? {};
   const kv = env?.CONTACTS_KV;
 
-  // If KV not bound, return empty list (no secrets leaked)
-  if (!kv) return new Response(JSON.stringify({ contacts: [] }), {
-    status: 200,
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-  });
+  // quick debug (safe)
+  console.log("contacts-list CONTACTS_KV:", Boolean(kv));
 
-  // Option A (simple v1): store a single index key "contacts:index" = ["yysng", ...]
-  const indexRaw = await kv.get("contacts:index");
-  const slugs: string[] = indexRaw ? (JSON.parse(indexRaw) as string[]) : [];
-
-  const contacts = [];
-  for (const slug of slugs) {
-    const raw = await kv.get(`contact:${slug}`);
-    if (!raw) continue;
-    try {
-      const c = JSON.parse(raw);
-      contacts.push({ slug: c.slug, fullName: c.fullName });
-    } catch {}
+  if (!kv) {
+    return new Response(JSON.stringify({ error: "Missing CONTACTS_KV binding" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+    });
   }
+
+  // 1) read the index
+  const indexRaw = await kv.get("contacts:index");
+  if (!indexRaw) {
+    return new Response(JSON.stringify({ contacts: [] }), {
+      status: 200,
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
+  let slugs: string[] = [];
+  try {
+    slugs = JSON.parse(indexRaw);
+  } catch {
+    return new Response(JSON.stringify({ error: "contacts:index is not valid JSON" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+    });
+  }
+
+  // 2) fetch each contact
+  const contacts = (
+    await Promise.all(
+      slugs.map(async (slug) => {
+        const raw = await kv.get(`contact:${slug}`);
+        if (!raw) return null;
+        try {
+          const c = JSON.parse(raw) as ContactRecord;
+
+          // IMPORTANT: don’t leak privateToken
+          delete (c as any).privateToken;
+          delete (c as any).phone; // optional: don’t leak phone either in list
+
+          return c;
+        } catch {
+          return null;
+        }
+      })
+    )
+  ).filter(Boolean);
 
   return new Response(JSON.stringify({ contacts }), {
     status: 200,

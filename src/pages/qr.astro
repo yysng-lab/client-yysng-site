@@ -1,5 +1,4 @@
 ---
-// src/pages/qr.astro
 import qrScriptUrl from "../scripts/qr-generator.ts?url";
 ---
 
@@ -13,7 +12,7 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
   <body style="font-family: system-ui; padding: 24px; max-width: 980px; margin: 0 auto;">
     <h1 style="margin-bottom: 8px;">QR Generator</h1>
     <p style="margin-top: 0; opacity: .7;">
-      Public QR = safe to share. Offline QR = requires manual token input (treat as private).
+      Public QR = safe to share. Offline QR = includes token (treat as private).
     </p>
 
     <!-- Controls -->
@@ -21,14 +20,14 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
       <label>
         Select contact:
         <select id="contact" style="margin-left: 8px; padding: 6px 10px;">
-          <option value="">Loading…</option>
+          <option value="" selected>Loading…</option>
         </select>
       </label>
 
       <label>
         Mode:
         <select id="mode" style="margin-left: 8px; padding: 6px 10px;">
-          <option value="public">public</option>
+          <option value="public" selected>public</option>
           <option value="offline">offline</option>
         </select>
       </label>
@@ -38,7 +37,7 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
         <input
           id="token"
           type="password"
-          placeholder="paste token"
+          placeholder="paste offline token"
           style="margin-left: 8px; padding: 6px 10px; width: 260px;"
         />
       </label>
@@ -50,36 +49,27 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
         <!-- QR -->
         <div>
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
-          <canvas
-            id="qr"
-            width="320"
-            height="320"
-            style="border: 1px solid #ddd; border-radius: 12px;"
-          ></canvas>
+          <canvas id="qr" width="320" height="320"
+            style="border: 1px solid #ddd; border-radius: 12px;"></canvas>
 
           <div style="margin-top: 12px; display:flex; gap: 10px; flex-wrap: wrap;">
             <button id="downloadPng" style="padding: 8px 12px;">Download PNG</button>
             <button id="copyUrl" style="padding: 8px 12px;">Copy URL</button>
           </div>
+
+          <p id="hint" style="margin-top: 10px; font-size: 13px; opacity:.75;"></p>
         </div>
 
         <!-- URL -->
         <div style="min-width: 320px; flex: 1;">
           <div style="font-weight:600; margin-bottom: 10px;">Target URL</div>
-          <code
-            id="url"
-            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"
-          ></code>
-
-          <div style="margin-top: 10px; font-size: 13px; opacity:.75;">
-            Tip: Use <strong>public</strong> for printed cards.
-            Use <strong>offline</strong> only for NFC / controlled sharing.
-          </div>
+          <code id="url"
+            style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"></code>
         </div>
       </div>
     </div>
 
-    <!-- ✅ Bundled client script (works on prod) -->
+    <!-- ✅ Bundled client script -->
     <script type="module" src={qrScriptUrl}></script>
   </body>
 </html>

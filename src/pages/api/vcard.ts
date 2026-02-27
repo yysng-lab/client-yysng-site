@@ -1,78 +1,76 @@
+// src/pages/api/vcard.ts
 import type { APIRoute } from "astro";
-import contactsDev from "../../data/contacts.dev.json";
+import { getContactBySlug } from "../../lib/contacts";
 
-type ContactRecord = {
-  slug: string;
-  fullName: string;
-  headline?: string;
-  email: string;
-  phone?: string;
-  website?: string;
-  privateToken?: string;
-};
-
-type DevFile = { contacts: ContactRecord[] };
-const DEV_DATA = contactsDev as unknown as DevFile;
-
-function sanitize(v?: string): string {
-  return String(v ?? "").replace(/\r?\n/g, " ").trim();
+function escVCard(value: string) {
+  return String(value ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .trim();
 }
 
-function buildVcard(opts: { contact: ContactRecord; includeTel: boolean }): string {
-  const c = opts.contact;
-  const lines: string[] = [];
-
-  lines.push("BEGIN:VCARD");
-  lines.push("VERSION:3.0");
-  lines.push(`FN:${sanitize(c.fullName)}`);
-
-  if (opts.includeTel && c.phone) {
-    lines.push(`TEL;TYPE=CELL:${sanitize(c.phone)}`);
-  }
-
-  lines.push(`EMAIL:${sanitize(c.email)}`);
-
-  if (c.headline) lines.push(`TITLE:${sanitize(c.headline)}`);
-
-  const primaryUrl = c.website;
-  if (primaryUrl) lines.push(`URL:${sanitize(primaryUrl)}`);
-
-  lines.push("END:VCARD");
-
-  return lines.join("\r\n") + "\r\n";
-}
-
-async function getContact(slug: string): Promise<ContactRecord | null> {
-  return DEV_DATA.contacts.find((c) => c.slug === slug) ?? null;
-}
-
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, locals }) => {
   const slug = url.searchParams.get("slug") ?? "";
   const mode = (url.searchParams.get("m") ?? "public").toLowerCase();
   const token = url.searchParams.get("t") ?? "";
 
-  if (!slug) {
-    return new Response("Missing slug", { status: 400 });
-  }
+  if (!slug) return new Response("Missing slug", { status: 400 });
 
-  const contact = await getContact(slug);
-  if (!contact) {
-    return new Response("Contact not found", { status: 404 });
-  }
+  const env = (locals as any)?.runtime?.env ?? {};
+  const contact = await getContactBySlug({ slug, env });
 
-  const wantsOffline = mode === "offline";
+  if (!contact) return new Response("Not found", { status: 404 });
+
+  // TEL only when mode=offline AND token matches exactly
   const tokenValid =
-    wantsOffline &&
+    mode === "offline" &&
     typeof contact.privateToken === "string" &&
+    contact.privateToken.length >= 20 &&
     token === contact.privateToken;
 
-  const vcf = buildVcard({ contact, includeTel: tokenValid });
+  const lines: string[] = ["BEGIN:VCARD", "VERSION:3.0"];
+
+  // FN
+  if (contact.fullName) lines.push(`FN:${escVCard(contact.fullName)}`);
+
+  // N (best-effort)
+  // vCard wants: N:Family;Given;Additional;Prefix;Suffix
+  const parts = String(contact.fullName ?? "").trim().split(/\s+/).filter(Boolean);
+  const family = parts.length >= 2 ? parts[0] : "";
+  const given = parts.length >= 2 ? parts.slice(1).join(" ") : parts[0] ?? "";
+  lines.push(`N:${escVCard(family)};${escVCard(given)};;;`);
+
+  // TEL (offline only)
+  if (tokenValid && contact.phone) {
+    lines.push(`TEL;TYPE=CELL:${escVCard(contact.phone)}`);
+  }
+
+  // EMAIL + TITLE
+  if (contact.email) lines.push(`EMAIL:${escVCard(contact.email)}`);
+  if (contact.headline) lines.push(`TITLE:${escVCard(contact.headline)}`);
+
+  // URL: prefer website, else LinkedIn
+  const primaryUrl = contact.website || contact.linkedin;
+  if (primaryUrl) lines.push(`URL:${escVCard(primaryUrl)}`);
+
+  // ✅ NOTE: include oneLiner (always) + LinkedIn (always, if exists)
+  // (Many contact apps display NOTE; safest way for v1)
+  const notes: string[] = [];
+  if (contact.oneLiner) notes.push(contact.oneLiner);
+  if (contact.linkedin) notes.push(`LinkedIn: ${contact.linkedin}`);
+  if (notes.length > 0) lines.push(`NOTE:${escVCard(notes.join("\n"))}`);
+
+  lines.push("END:VCARD");
+
+  const vcf = lines.join("\r\n") + "\r\n";
 
   return new Response(vcf, {
     status: 200,
     headers: {
       "Content-Type": "text/vcard; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${slug}.vcf"`,
+      "Content-Disposition": `attachment; filename="${contact.slug}.vcf"`,
       "Cache-Control": tokenValid ? "no-store" : "public, max-age=300",
     },
   });

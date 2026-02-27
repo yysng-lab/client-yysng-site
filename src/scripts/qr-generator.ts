@@ -1,64 +1,64 @@
-// src/scripts/qr-generator.ts
 import * as QRCode from "qrcode";
 
-type ContactLite = {
-  slug: string;
-  fullName: string;
-};
+type ContactLite = { slug: string; fullName: string };
 
 function $(id: string) {
   return document.getElementById(id) as HTMLElement | null;
 }
 
 function buildTargetUrl(slug: string, mode: "public" | "offline", token?: string) {
-  const base = window.location.origin; // localhost + production
-  let url = `${base}/card/${encodeURIComponent(slug)}`;
+  const base = window.location.origin;
+  let u = `${base}/card/${encodeURIComponent(slug)}`;
 
-  if (mode === "offline" && token && token.trim().length > 0) {
-    url += `?m=offline&t=${encodeURIComponent(token.trim())}`;
+  if (mode === "offline" && token) {
+    u += `?m=offline&t=${encodeURIComponent(token)}`;
   }
 
-  return url;
+  return u;
 }
 
-function sanitizeFilePart(s: string) {
-  return String(s || "")
+function safeFileName(s: string) {
+  return s
+    .toLowerCase()
     .trim()
-    .replace(/[^\w\-]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .toLowerCase();
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-_]+/g, "");
 }
 
-async function fetchContacts(): Promise<ContactLite[]> {
-  const res = await fetch("/api/contacts-list", { cache: "no-store" });
-  if (!res.ok) return [];
+async function loadContacts(): Promise<ContactLite[]> {
+  const res = await fetch("/api/contacts-list", { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`contacts-list failed: ${res.status}`);
   const data = (await res.json()) as { contacts?: ContactLite[] };
   return Array.isArray(data.contacts) ? data.contacts : [];
 }
 
-async function render(state: { contacts: ContactLite[] }) {
+async function render() {
   const contactSel = $("contact") as HTMLSelectElement | null;
   const modeSel = $("mode") as HTMLSelectElement | null;
   const tokenWrap = $("tokenWrap") as HTMLLabelElement | null;
   const tokenInput = $("token") as HTMLInputElement | null;
   const canvas = $("qr") as HTMLCanvasElement | null;
   const urlBox = $("url") as HTMLElement | null;
+  const hint = $("hint") as HTMLElement | null;
 
-  if (!contactSel || !modeSel || !tokenWrap || !tokenInput || !canvas || !urlBox) return;
-  if (state.contacts.length === 0) return;
+  if (!contactSel || !modeSel || !tokenWrap || !tokenInput || !canvas || !urlBox || !hint) return;
+  if (!contactSel.value) return;
 
-  const slug = contactSel.value || state.contacts[0].slug;
-  const mode = (modeSel.value as "public" | "offline") || "public";
+  const slug = contactSel.value;
+  const fullName = contactSel.selectedOptions?.[0]?.getAttribute("data-name") ?? slug;
+  const mode = (modeSel.value as "public" | "offline") ?? "public";
 
-  // show/hide token input
-  tokenWrap.style.display = mode === "offline" ? "inline-block" : "none";
+  tokenWrap.style.display = mode === "offline" ? "inline-flex" : "none";
 
-  const contact = state.contacts.find((c) => c.slug === slug) ?? state.contacts[0];
-  const token = mode === "offline" ? tokenInput.value : "";
+  const token = mode === "offline" ? tokenInput.value.trim() : "";
+  const targetUrl = buildTargetUrl(slug, mode, token);
 
-  const targetUrl = buildTargetUrl(contact.slug, mode, token);
   urlBox.textContent = targetUrl;
+
+  hint.textContent =
+    mode === "offline"
+      ? "Offline QR includes token. Only use for your NFC / controlled sharing."
+      : "Public QR is safe to share.";
 
   await QRCode.toCanvas(canvas, targetUrl, {
     width: 320,
@@ -66,14 +66,13 @@ async function render(state: { contacts: ContactLite[] }) {
     errorCorrectionLevel: "M",
   });
 
-  // Download handler (name + slug + mode)
+  // Download handler (named)
   const downloadBtn = $("downloadPng") as HTMLButtonElement | null;
   if (downloadBtn) {
     downloadBtn.onclick = () => {
       const a = document.createElement("a");
-      const safeName = sanitizeFilePart(contact.fullName);
-      const safeSlug = sanitizeFilePart(contact.slug);
-      a.download = `qr-${safeName || "contact"}-${safeSlug}-${mode}.png`;
+      const niceName = safeFileName(fullName) || slug;
+      a.download = `qr-${niceName}-${slug}-${mode}.png`;
       a.href = canvas.toDataURL("image/png");
       a.click();
     };
@@ -85,9 +84,8 @@ async function render(state: { contacts: ContactLite[] }) {
     copyBtn.onclick = async () => {
       try {
         await navigator.clipboard.writeText(targetUrl);
-        const prev = copyBtn.textContent;
         copyBtn.textContent = "Copied!";
-        setTimeout(() => (copyBtn.textContent = prev || "Copy URL"), 900);
+        setTimeout(() => (copyBtn.textContent = "Copy URL"), 900);
       } catch {
         const ta = document.createElement("textarea");
         ta.value = targetUrl;
@@ -100,42 +98,43 @@ async function render(state: { contacts: ContactLite[] }) {
   }
 }
 
-function bind(state: { contacts: ContactLite[] }) {
+async function init() {
   const contactSel = $("contact") as HTMLSelectElement | null;
   const modeSel = $("mode") as HTMLSelectElement | null;
   const tokenInput = $("token") as HTMLInputElement | null;
 
-  contactSel?.addEventListener("change", () => void render(state));
-  modeSel?.addEventListener("change", () => void render(state));
-  tokenInput?.addEventListener("input", () => void render(state)); // live update QR
+  if (!contactSel || !modeSel || !tokenInput) return;
 
-  void render(state);
-}
+  // populate contacts
+  contactSel.innerHTML = `<option value="" selected>Select…</option>`;
+  try {
+    const contacts = await loadContacts();
+    if (!contacts.length) {
+      contactSel.innerHTML = `<option value="" selected>No contacts found</option>`;
+      return;
+    }
 
-async function init() {
-  const contactSel = $("contact") as HTMLSelectElement | null;
-  if (!contactSel) return;
+    for (const c of contacts) {
+      const opt = document.createElement("option");
+      opt.value = c.slug;
+      opt.textContent = `${c.fullName} (${c.slug})`;
+      opt.setAttribute("data-name", c.fullName);
+      contactSel.appendChild(opt);
+    }
 
-  const contacts = await fetchContacts();
-
-  // Populate dropdown
-  contactSel.innerHTML = "";
-  if (contacts.length === 0) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "No contacts found";
-    contactSel.appendChild(opt);
+    // default to first real option
+    contactSel.value = contacts[0].slug;
+  } catch (e) {
+    contactSel.innerHTML = `<option value="" selected>Failed to load</option>`;
+    console.error(e);
     return;
   }
 
-  for (const c of contacts) {
-    const opt = document.createElement("option");
-    opt.value = c.slug;
-    opt.textContent = `${c.fullName} (${c.slug})`;
-    contactSel.appendChild(opt);
-  }
+  contactSel.addEventListener("change", () => void render());
+  modeSel.addEventListener("change", () => void render());
+  tokenInput.addEventListener("input", () => void render());
 
-  bind({ contacts });
+  await render();
 }
 
 if (document.readyState === "loading") {
