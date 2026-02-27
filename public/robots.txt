@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /api/
+Disallow: /qr
+Disallow: /ai-editor/
+Disallow: /card/
+
+Allow: /card/yysng
+
+Sitemap: https://yysng.me/sitemap-index.xml

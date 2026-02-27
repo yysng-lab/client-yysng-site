@@ -11,6 +11,7 @@
     "img:coaches": "node scripts/img-coaches.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
     "@yysng/ai-edit-engine": "2.3.1",
     "@yysng/astro-boilerplate": "1.1.36",
     "astro": "^5.16.6",

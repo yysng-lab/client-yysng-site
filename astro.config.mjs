@@ -1,15 +1,24 @@
 import { defineConfig } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
+  site: "https://yysng.me", // ✅ REQUIRED for sitemap URLs
+
   output: "server",
+
+  integrations: [
+  sitemap({
+    filter: (page) => !page.includes('/qr'),
+  }),
+],
 
   adapter: cloudflare({
     mode: "advanced",
   }),
 
-   build: {
+  build: {
     inlineStylesheets: "auto",
   },
 
@@ -21,19 +30,14 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
-
     resolve: {
       dedupe: ["@yysng/astro-boilerplate"],
-
       alias: {
-        // Edge-safe: prevent Node builtins from bundling into production
         fs: false,
         path: false,
         crypto: false,
         stream: false,
         os: false,
-
-        // Edge-safe unstorage shim
         unstorage: new URL("./src/shims/unstorage-edge.js", import.meta.url).pathname,
       },
     },
