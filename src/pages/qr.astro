@@ -1,5 +1,38 @@
 ---
+import contactsDev from "../data/contacts.dev.json";
+import qrScriptUrl from "../scripts/qr-generator.ts?url";
+
+// ✅ simple gate for /qr
 export const prerender = false;
+
+const env = (Astro.locals as any)?.runtime?.env ?? {};
+const isProd = import.meta.env.PROD;
+
+const url = new URL(Astro.request.url);
+const key = url.searchParams.get("k") ?? "";
+
+// ✅ allow localhost without key (change to true if you want to require it locally too)
+const ALLOW_DEV_WITHOUT_KEY = true;
+
+if (isProd) {
+  const required = String(env.INTERNAL_QR_KEY ?? "").trim();
+  if (!required || key !== required) {
+    // Hide endpoint existence
+    return new Response("Not found", { status: 404 });
+  }
+} else {
+  if (!ALLOW_DEV_WITHOUT_KEY) {
+    const required = String(env.INTERNAL_QR_KEY ?? "").trim();
+    if (required && key !== required) {
+      return new Response("Not found", { status: 404 });
+    }
+  }
+}
+
+const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
+  slug: c.slug,
+  fullName: c.fullName,
+}));
 ---
 
 <html lang="en">
