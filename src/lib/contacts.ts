@@ -32,12 +32,26 @@ export type ContactRecord = {
 type DevFile = { contacts: ContactRecord[] };
 
 async function getFromDevFile(slug: string): Promise<ContactRecord | null> {
-  if (!import.meta.env.DEV) return null;
-
   try {
     const mod = await import("../data/contacts.dev.json");
     const data = (mod.default ?? mod) as unknown as DevFile;
-    return data?.contacts?.find((c) => c.slug === slug) ?? null;
+    const hit = data?.contacts?.find((c) => c.slug === slug);
+    return hit ?? null;
+  } catch (e) {
+    console.warn("[contacts] dev json not loaded:", e);
+    return null;
+  }
+}
+
+async function getFromKV(slug: string, env?: Record<string, any>): Promise<ContactRecord | null> {
+  const kv = env?.CONTACTS_KV;
+  if (!kv) return null;
+
+  const raw = await kv.get(`contact:${slug}`);
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw) as ContactRecord;
   } catch {
     return null;
   }
@@ -50,19 +64,17 @@ export async function getContactBySlug(opts: {
   const safeSlug = String(opts.slug || "").trim();
   if (!safeSlug) return null;
 
-  const kv = opts.env?.CONTACTS_KV;
-  if (kv) {
-    const raw = await kv.get(`contact:${safeSlug}`);
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw) as ContactRecord;
-    } catch {
-      return null;
-    }
+  // ✅ Local dev: JSON first (your preferred workflow)
+  if (import.meta.env.DEV) {
+    const devHit = await getFromDevFile(safeSlug);
+    if (devHit) return devHit;
+
+    // Optional fallback to KV in dev (keeps dev usable if json missing)
+    return await getFromKV(safeSlug, opts.env);
   }
 
-  // Only fallback in DEV (never in prod)
-  return await getFromDevFile(safeSlug);
+  // ✅ Production: KV only (no JSON fallback)
+  return await getFromKV(safeSlug, opts.env);
 }
 
 export function initialsFromName(name: string): string {

@@ -1,5 +1,5 @@
 ---
-import qrScriptUrl from "../scripts/qr-generator.ts?url";
+export const prerender = false;
 ---
 
 <html lang="en">
@@ -12,22 +12,20 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
   <body style="font-family: system-ui; padding: 24px; max-width: 980px; margin: 0 auto;">
     <h1 style="margin-bottom: 8px;">QR Generator</h1>
     <p style="margin-top: 0; opacity: .7;">
-      Public QR = safe to share. Offline QR = includes token (treat as private).
+      Public QR = safe to share. Offline QR = paste token manually (private).
     </p>
 
     <!-- Controls -->
     <div style="display:flex; gap: 16px; flex-wrap: wrap; align-items:center; margin-top: 14px;">
       <label>
         Select contact:
-        <select id="contact" style="margin-left: 8px; padding: 6px 10px;">
-          <option value="" selected>Loading…</option>
-        </select>
+        <select id="contact" style="margin-left: 8px; padding: 6px 10px;"></select>
       </label>
 
       <label>
         Mode:
         <select id="mode" style="margin-left: 8px; padding: 6px 10px;">
-          <option value="public" selected>public</option>
+          <option value="public">public</option>
           <option value="offline">offline</option>
         </select>
       </label>
@@ -36,9 +34,8 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
         Token:
         <input
           id="token"
-          type="password"
           placeholder="paste offline token"
-          style="margin-left: 8px; padding: 6px 10px; width: 260px;"
+          style="margin-left: 8px; padding: 6px 10px; width: 240px;"
         />
       </label>
     </div>
@@ -46,6 +43,7 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
     <!-- Layout -->
     <div style="margin-top: 24px;">
       <div style="display:flex; gap: 32px; flex-wrap: wrap; align-items:flex-start;">
+
         <!-- QR -->
         <div>
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
@@ -56,8 +54,6 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
             <button id="downloadPng" style="padding: 8px 12px;">Download PNG</button>
             <button id="copyUrl" style="padding: 8px 12px;">Copy URL</button>
           </div>
-
-          <p id="hint" style="margin-top: 10px; font-size: 13px; opacity:.75;"></p>
         </div>
 
         <!-- URL -->
@@ -65,11 +61,128 @@ import qrScriptUrl from "../scripts/qr-generator.ts?url";
           <div style="font-weight:600; margin-bottom: 10px;">Target URL</div>
           <code id="url"
             style="display:block; padding: 12px; border: 1px solid #ddd; border-radius: 12px; white-space: pre-wrap; min-height: 48px;"></code>
+
+          <div style="margin-top: 10px; font-size: 13px; opacity:.75;">
+            Tip: Use <strong>public</strong> for printed cards. Use <strong>offline</strong> only for your own NFC / controlled sharing.
+          </div>
+
+          <div id="status" style="margin-top: 12px; font-size: 13px; opacity: .75;">Loading…</div>
         </div>
+
       </div>
     </div>
 
-    <!-- ✅ Bundled client script -->
-    <script type="module" src={qrScriptUrl}></script>
+    <!-- ✅ Inline module (no .ts file load in browser) -->
+    <script type="module">
+      import * as QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm";
+
+      function $(id) { return document.getElementById(id); }
+
+      function buildTargetUrl(slug, mode, token) {
+        const base = window.location.origin;
+        let url = `${base}/card/${encodeURIComponent(slug)}`;
+        if (mode === "offline" && token) {
+          url += `?m=offline&t=${encodeURIComponent(token)}`;
+        }
+        return url;
+      }
+
+      async function loadContacts() {
+        const status = $("status");
+        try {
+          const res = await fetch("/api/contacts-list", { cache: "no-store" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          const contacts = data?.contacts ?? [];
+
+          const sel = $("contact");
+          sel.innerHTML = "";
+          for (const c of contacts) {
+            const opt = document.createElement("option");
+            opt.value = c.slug;
+            opt.textContent = `${c.fullName} (${c.slug})`;
+            sel.appendChild(opt);
+          }
+
+          status.textContent = contacts.length ? "Ready." : "No contacts found.";
+          return contacts;
+        } catch (e) {
+          status.textContent = "Failed to load contacts.";
+          console.error(e);
+          return [];
+        }
+      }
+
+      async function render() {
+        const contactSel = $("contact");
+        const modeSel = $("mode");
+        const tokenWrap = $("tokenWrap");
+        const tokenInput = $("token");
+        const canvas = $("qr");
+        const urlBox = $("url");
+
+        if (!contactSel || !modeSel || !canvas || !urlBox) return;
+        const slug = contactSel.value;
+        const mode = modeSel.value;
+
+        tokenWrap.style.display = (mode === "offline") ? "inline-flex" : "none";
+
+        const token = (mode === "offline") ? (tokenInput.value || "") : "";
+        const targetUrl = buildTargetUrl(slug, mode, token);
+
+        urlBox.textContent = targetUrl;
+
+        await QRCode.toCanvas(canvas, targetUrl, {
+          width: 320,
+          margin: 1,
+          errorCorrectionLevel: "M",
+        });
+
+        const downloadBtn = $("downloadPng");
+        if (downloadBtn) {
+          downloadBtn.onclick = () => {
+            const a = document.createElement("a");
+            a.download = `qr-${slug}-${mode}.png`;
+            a.href = canvas.toDataURL("image/png");
+            a.click();
+          };
+        }
+
+        const copyBtn = $("copyUrl");
+        if (copyBtn) {
+          copyBtn.onclick = async () => {
+            try {
+              await navigator.clipboard.writeText(targetUrl);
+              copyBtn.textContent = "Copied!";
+              setTimeout(() => (copyBtn.textContent = "Copy URL"), 900);
+            } catch {
+              const ta = document.createElement("textarea");
+              ta.value = targetUrl;
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand("copy");
+              document.body.removeChild(ta);
+            }
+          };
+        }
+      }
+
+      async function init() {
+        const contacts = await loadContacts();
+        const contactSel = $("contact");
+        const modeSel = $("mode");
+        const tokenInput = $("token");
+
+        if (!contacts.length) return;
+
+        contactSel.addEventListener("change", () => void render());
+        modeSel.addEventListener("change", () => void render());
+        tokenInput.addEventListener("input", () => void render());
+
+        await render();
+      }
+
+      init();
+    </script>
   </body>
 </html>
