@@ -1,7 +1,4 @@
 ---
-import contactsDev from "../data/contacts.dev.json";
-import qrScriptUrl from "../scripts/qr-generator.ts?url";
-
 // ✅ simple gate for /qr
 export const prerender = false;
 
@@ -11,13 +8,12 @@ const isProd = import.meta.env.PROD;
 const url = new URL(Astro.request.url);
 const key = url.searchParams.get("k") ?? "";
 
-// ✅ allow localhost without key (change to true if you want to require it locally too)
+// ✅ allow localhost without key (change to false if you want to require it locally too)
 const ALLOW_DEV_WITHOUT_KEY = true;
 
 if (isProd) {
   const required = String(env.INTERNAL_QR_KEY ?? "").trim();
   if (!required || key !== required) {
-    // Hide endpoint existence
     return new Response("Not found", { status: 404 });
   }
 } else {
@@ -28,11 +24,6 @@ if (isProd) {
     }
   }
 }
-
-const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
-  slug: c.slug,
-  fullName: c.fullName,
-}));
 ---
 
 <html lang="en">
@@ -40,6 +31,7 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QR Generator</title>
+    <meta name="robots" content="noindex, nofollow" />
   </head>
 
   <body style="font-family: system-ui; padding: 24px; max-width: 980px; margin: 0 auto;">
@@ -76,7 +68,6 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
     <!-- Layout -->
     <div style="margin-top: 24px;">
       <div style="display:flex; gap: 32px; flex-wrap: wrap; align-items:flex-start;">
-
         <!-- QR -->
         <div>
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
@@ -101,11 +92,9 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
 
           <div id="status" style="margin-top: 12px; font-size: 13px; opacity: .75;">Loading…</div>
         </div>
-
       </div>
     </div>
 
-    <!-- ✅ Inline module (no .ts file load in browser) -->
     <script type="module">
       import * as QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm";
 
@@ -130,6 +119,7 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
 
           const sel = $("contact");
           sel.innerHTML = "";
+
           for (const c of contacts) {
             const opt = document.createElement("option");
             opt.value = c.slug;
@@ -155,12 +145,14 @@ const contacts = ((contactsDev as any).contacts ?? []).map((c: any) => ({
         const urlBox = $("url");
 
         if (!contactSel || !modeSel || !canvas || !urlBox) return;
+        if (!contactSel.value) return;
+
         const slug = contactSel.value;
         const mode = modeSel.value;
 
-        tokenWrap.style.display = (mode === "offline") ? "inline-flex" : "none";
+        tokenWrap.style.display = mode === "offline" ? "inline-flex" : "none";
 
-        const token = (mode === "offline") ? (tokenInput.value || "") : "";
+        const token = mode === "offline" ? (tokenInput.value || "") : "";
         const targetUrl = buildTargetUrl(slug, mode, token);
 
         urlBox.textContent = targetUrl;
