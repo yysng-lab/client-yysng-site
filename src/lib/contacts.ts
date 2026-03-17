@@ -16,7 +16,7 @@ export type ContactRecord = {
   company?: string;
   oneLiner?: string;
   location?: string;
-  email: string;
+  email?: string;
   phone?: string;
   website?: string;
   linkedin?: string;
@@ -33,8 +33,11 @@ type DevFile = { contacts: ContactRecord[] };
 
 async function getFromDevFile(slug: string): Promise<ContactRecord | null> {
   try {
-    const mod = await import("../data/contacts.dev.json");
-    const data = (mod.default ?? mod) as unknown as DevFile;
+    const fs = await import("node:fs/promises");
+    const fileUrl = new URL("../data/contacts.dev.json", import.meta.url);
+    const raw = await fs.readFile(fileUrl, "utf8");
+    const data = JSON.parse(raw) as DevFile;
+
     const hit = data?.contacts?.find((c) => c.slug === slug);
     return hit ?? null;
   } catch (e) {
@@ -64,16 +67,16 @@ export async function getContactBySlug(opts: {
   const safeSlug = String(opts.slug || "").trim();
   if (!safeSlug) return null;
 
-  // ✅ Local dev: JSON first (your preferred workflow)
+  // Local dev: JSON first
   if (import.meta.env.DEV) {
     const devHit = await getFromDevFile(safeSlug);
     if (devHit) return devHit;
 
-    // Optional fallback to KV in dev (keeps dev usable if json missing)
+    // optional fallback to KV in dev
     return await getFromKV(safeSlug, opts.env);
   }
 
-  // ✅ Production: KV only (no JSON fallback)
+  // Production: KV only
   return await getFromKV(safeSlug, opts.env);
 }
 
