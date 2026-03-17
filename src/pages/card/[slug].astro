@@ -187,5 +187,21 @@ const canonical = `https://yysng.me/card/${contact.slug}`;
         </div>
       </div>
     </section>
+
+    <script>
+  try {
+    const slug = window.location.pathname.split("/").pop();
+    if (slug && !sessionStorage.getItem(`opened:${slug}`)) {
+      fetch(`/api/track-open?slug=${encodeURIComponent(slug)}`, {
+        method: "POST",
+        keepalive: true,
+      });
+      sessionStorage.setItem(`opened:${slug}`, "1");
+    }
+  } catch (e) {
+    console.warn("track-open failed", e);
+  }
+</script>
+
   </main>
 </Base>
