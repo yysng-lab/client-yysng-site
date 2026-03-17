@@ -14,9 +14,6 @@ const t = url.searchParams.get("t") ?? "";
 // ✅ env must be pulled once (don’t default to {})
 const env = Astro.locals.runtime.env;
 
-// ✅ debug (remove once confirmed)
-console.log("CONTACTS_KV binding:", Boolean(env?.CONTACTS_KV));
-console.log("slug param:", slug);
 
 if (!slug) {
   return new Response("Not found", { status: 404 });
@@ -26,6 +23,7 @@ const contact = await getContactBySlug({
   slug,
   env,
 });
+
 
 if (!contact) {
   return new Response("Not found", { status: 404 });
