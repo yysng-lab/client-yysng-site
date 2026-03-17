@@ -1,4 +1,3 @@
-// src/pages/api/contacts-list.ts
 import type { APIRoute } from "astro";
 
 type ContactLite = {
@@ -29,7 +28,7 @@ async function getFromDevFile(): Promise<ContactLite[]> {
 }
 
 export const GET: APIRoute = async ({ locals }) => {
-  // ✅ In local dev, always prefer contacts.dev.json
+  // In local dev, prefer contacts.dev.json
   if (import.meta.env.DEV) {
     const contacts = await getFromDevFile();
 
