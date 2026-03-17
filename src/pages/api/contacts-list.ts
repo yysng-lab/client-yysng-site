@@ -1,3 +1,4 @@
+// src/pages/api/contacts-list.ts
 import type { APIRoute } from "astro";
 
 type ContactLite = {
@@ -11,8 +12,11 @@ type DevFile = {
 
 async function getFromDevFile(): Promise<ContactLite[]> {
   try {
-    const mod = await import("../../data/contacts.dev.json");
-    const data = (mod.default ?? mod) as DevFile;
+    const fs = await import("node:fs/promises");
+
+    const fileUrl = new URL("../../data/contacts.dev.json", import.meta.url);
+    const raw = await fs.readFile(fileUrl, "utf8");
+    const data = JSON.parse(raw) as DevFile;
 
     return Array.isArray(data.contacts)
       ? data.contacts
@@ -28,7 +32,7 @@ async function getFromDevFile(): Promise<ContactLite[]> {
 }
 
 export const GET: APIRoute = async ({ locals }) => {
-  // In local dev, prefer contacts.dev.json
+  // ✅ Local dev: always use contacts.dev.json
   if (import.meta.env.DEV) {
     const contacts = await getFromDevFile();
 
