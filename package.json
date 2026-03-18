@@ -1,5 +1,5 @@
 {
-  "name": "client-ezycoaching-site",
+  "name": "client-yysng-site",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -8,7 +8,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "img:home": "node scripts/resize-home-images.mjs",
-    "img:coaches": "node scripts/img-coaches.mjs"
+    "img:coaches": "node scripts/img-coaches.mjs",
+    "add-contact": "node scripts/add-contact.js",
+    "to-webp": "node scripts/convert-to-webp.js"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
