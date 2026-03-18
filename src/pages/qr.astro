@@ -73,6 +73,7 @@ if (isProd) {
           <div style="font-weight:600; margin-bottom: 10px;">QR Preview</div>
           <canvas id="qr" width="320" height="320"
             style="border: 1px solid #ddd; border-radius: 12px;"></canvas>
+            <div id="qrLabel" style="margin-top: 10px; font-size: 14px; text-align: center; opacity: 0.8;"></div>
 
           <div style="margin-top: 12px; display:flex; gap: 10px; flex-wrap: wrap;">
             <button id="downloadPng" style="padding: 8px 12px;">Download PNG</button>
@@ -157,10 +158,23 @@ if (isProd) {
 
         urlBox.textContent = targetUrl;
 
+        const isOffline = mode === "offline";
+
+        // ✅ Label BELOW QR
+        const label = $("qrLabel");
+        label.textContent = isOffline
+          ? "🔒 Offline (Private)"
+          : "🌐 Public (Shareable)";
+
+        // ✅ QR color logic
         await QRCode.toCanvas(canvas, targetUrl, {
           width: 320,
           margin: 1,
           errorCorrectionLevel: "M",
+          color: {
+            dark: isOffline ? "#184979" : "#000000",
+            light: "#ffffff",
+          },
         });
 
         const downloadBtn = $("downloadPng");
