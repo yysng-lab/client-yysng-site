@@ -5,6 +5,3 @@ compatibility_flags = ["nodejs_compat"]
 kv_namespaces = [
   { binding = "CONTACTS_KV", id = "c883891654e44a3ab6633c2a9e84cde9", preview_id = "c883891654e44a3ab6633c2a9e84cde9" }
 ]
-
-[triggers]
-crons = ["0 14 * * *"]
