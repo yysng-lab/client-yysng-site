@@ -1,0 +1,17 @@
+name = "yysng-vcard-daily-summary"
+main = "index.js"
+compatibility_date = "2026-04-08"
+
+[triggers]
+# Daily summary: 10PM SGT = 14:00 UTC
+# Weekly nudge: Monday 8AM SGT = Monday 00:00 UTC
+crons = ["0 14 * * *", "0 0 * * 1"]
+
+[[kv_namespaces]]
+binding = "CONTACTS_KV"
+id = "c883891654e44a3ab6633c2a9e84cde9"
+
+[vars]
+FROM_EMAIL = "updates@yysng.me"
+SITE_BASE_URL = "https://yysng.me"
+ADMIN_REPORT_EMAIL = "updates@yysng.me"

@@ -10,16 +10,19 @@
     "img:home": "node scripts/resize-home-images.mjs",
     "img:coaches": "node scripts/img-coaches.mjs",
     "add-contact": "node scripts/add-contact.js",
-    "to-webp": "node scripts/convert-to-webp.js"
+    "to-webp": "node scripts/convert-to-webp.js",
+    "send-vcard-daily-summary": "node scripts/send-vcard-daily-summary.js",
+    "send-vcard-weekly-nudge": "node scripts/send-vcard-weekly-nudge.js"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
     "@yysng/ai-edit-engine": "2.3.1",
     "@yysng/astro-boilerplate": "1.1.36",
     "astro": "^5.16.6",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.4.1",
     "openai": "^6.15.0",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "resend": "^6.10.0"
   },
   "devDependencies": {
     "@astrojs/cloudflare": "^12.6.12",
