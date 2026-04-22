@@ -61,7 +61,7 @@ async function maybeSendNudge(env, contact, slug, stage, subject, text, testMode
   return true;
 }
 
-const TEST_MODE = true;
+const TEST_MODE = false;
 
 async function runDailySummary(env) {
   const today = todayKeyPart();
