@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 const { data } = Astro.props;
 
 // robust newline renderer (handles both "\n" and "\\n")
@@ -55,15 +57,14 @@ const renderText = (v = "") =>
           <div class="lg:col-span-5">
           <div class="visual-frame">
             <div class="aspect-[4/5] w-full relative overflow-hidden">
-              <img
+              <Image
                 src="/images/yy/hero-sit.jpg"
                 alt="YY Sng working on a laptop"
-                width="960"
-                height="1200"
+                width={600}
+                height={750}
                 fetchpriority="high"
                 loading="eager"
                 decoding="async"
-                sizes="(min-width: 1024px) 40vw, 100vw"
                 class="absolute inset-0 h-full w-full object-cover object-[55%_25%]"
               />
             </div>
