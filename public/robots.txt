@@ -20,3 +20,15 @@ Allow: /
 
 # LLMs.txt location
 Sitemap: https://yysng.me/llms.txt
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /

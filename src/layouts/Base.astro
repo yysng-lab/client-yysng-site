@@ -48,7 +48,13 @@ const {
     <meta property="og:url" content={Astro.props.canonical ?? Astro.url.href} />
     <meta property="og:locale" content="en_SG" />
     <meta property="og:site_name" content="YY Sng" />
-    {Astro.props.ogImage && <meta property="og:image" content={Astro.props.ogImage} />}
+    <meta property="og:image" content={Astro.props.ogImage ?? "https://yysng.me/images/yy/og-main.webp"} />
+
+    {/* Twitter / X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={Astro.props.ogTitle ?? title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={Astro.props.ogImage ?? "https://yysng.me/images/yy/og-main.webp"} />
 
     {/* Optional: keywords */}
     {Astro.props.keywords && <meta name="keywords" content={Astro.props.keywords} />}
