@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import heroImage from '../../../public/images/yy/hero-sit.jpg';
 
 const { data } = Astro.props;
 
@@ -58,13 +59,12 @@ const renderText = (v = "") =>
           <div class="visual-frame">
             <div class="aspect-[4/5] w-full relative overflow-hidden">
               <Image
-                src="/images/yy/hero-sit.jpg"
+                src={heroImage}
                 alt="YY Sng working on a laptop"
                 width={600}
                 height={750}
                 fetchpriority="high"
                 loading="eager"
-                decoding="async"
                 class="absolute inset-0 h-full w-full object-cover object-[55%_25%]"
               />
             </div>
