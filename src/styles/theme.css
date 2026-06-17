@@ -2,21 +2,25 @@
   :root {
     /* ===== yysng.me (Operator) ===== */
 
-    /* Core palette (LOCKED) */
-    --bg: #F7F9FC;
-    --surface: #FFFFFF;
-    --ink: #0B1220;
-    --muted: #4B5563;
-    --border: #E5E7EB;
-    --accent: #2F6BFF;
-    --accentSoft: #EAF1FF;
+    /* Core palette */
+    --bg:         oklch(0.97 0.01 110);   /* faint olive-tinted white */
+    --surface:    oklch(1.000 0.000 0);   /* pure white — cards float above bg */
+    --ink:        oklch(0.13 0.02 75);    /* near-black, slight warm lean */
+    --muted:      oklch(0.42 0.015 75);   /* secondary text, warm-leaning grey */
+    --border:     oklch(0.88 0.015 110);  /* subtle olive-tinted border */
+    --accent:     oklch(0.28 0.08 110);   /* deep moss — primary brand color */
+    --accentSoft: oklch(0.95 0.025 110);  /* soft moss tint */
+    --brass:      oklch(0.45 0.10 75);    /* warm brass — links & active states */
+    --wash:       oklch(0.95 0.02 110 / 0.55);
 
-    /* Optional: subtle wash for overlays */
-    --wash: rgba(234, 241, 255, 0.55);
+    /* ===== Font families ===== */
+    --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-headline: "Sora", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
 
-    /* ===== Shadows (quietly premium) ===== */
-    --shadow-sm: 0 1px 2px rgba(11, 18, 32, 0.06), 0 6px 20px rgba(11, 18, 32, 0.06);
-    --shadow-md: 0 18px 55px rgba(11, 18, 32, 0.10);
+    /* ===== Shadows ===== */
+    --shadow-sm: 0 1px 3px oklch(0.13 0.02 75 / 0.07), 0 4px 16px oklch(0.13 0.02 75 / 0.06);
+    --shadow-md: 0 12px 40px oklch(0.13 0.02 75 / 0.12);
 
     /* ===== Radius ===== */
     --radius-sm: 10px;

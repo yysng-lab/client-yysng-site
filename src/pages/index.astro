@@ -2,242 +2,152 @@
 export const prerender = false;
 
 import Base from "../layouts/Base.astro";
-
-import heroDefault from "../data/hero.json";
-import ctaDefault from "../data/cta.json";
-
 import Hero from "../components/home/Hero.astro";
 import FinalCTA from "../components/home/FinalCTA.astro";
+import WhatIBuild from "../sections/WhatIBuild.astro";
+import WhereIOperate from "../sections/WhereIOperate.astro";
+import FromTheField from "../sections/FromTheField.astro";
 
-type HeroContent = typeof heroDefault;
-type CtaContent = typeof ctaDefault;
-
+// ── Supabase (edge-safe: plain fetch against REST API) ──────────────────────
 const env = Astro.locals?.runtime?.env ?? {};
+const SUPABASE_URL =
+  (env as Record<string, string>).SUPABASE_URL ?? import.meta.env.SUPABASE_URL ?? "";
+const SUPABASE_ANON_KEY =
+  (env as Record<string, string>).SUPABASE_ANON_KEY ?? import.meta.env.SUPABASE_ANON_KEY ?? "";
 
-async function readKVOrDefault<T>(key: string, fallback: T): Promise<T> {
-  if (!env.CONTENT_KV) return fallback;
-  const raw = await env.CONTENT_KV.get(`${key}.json`);
-  if (!raw) return fallback;
-  try { return JSON.parse(raw) as T; } catch { return fallback; }
-}
-
-const hero = await readKVOrDefault<HeroContent>("hero", heroDefault);
-const cta  = await readKVOrDefault<CtaContent>("cta", ctaDefault);
-
-
-const homepageSEO = {
-  title: "YY Sng — AI Operator",
-  description:
-    "I work across operations, strategy, and product — helping teams redesign execution so AI creates leverage instead of noise.",
-  canonical: "https://yysng.me/",
-  ogTitle: "AI doesn’t fail inside companies. Workflows do.",
-  ogDescription:
-    "I work across operations, strategy, and product — helping teams redesign execution so AI creates leverage instead of noise.",
-  ogType: "website",
-  ogImage: "https://yysng.me/images/yy/og-main.webp", 
-  keywords: "AI operator, workflow redesign, execution, operations, product, strategy",
+const supabaseHeaders = {
+  apikey: SUPABASE_ANON_KEY,
+  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+  "Content-Type": "application/json",
 };
 
-const homepageJsonLd = [
+async function supabaseFetch(path: string) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: supabaseHeaders,
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+// Section 2 — What I Build
+interface System {
+  name: string;
+  status: string;
+  public_description: string | null;
+}
+const systemsRaw = await supabaseFetch(
+  "systems?public=eq.true&select=name,status,public_description&order=status"
+);
+const systems: System[] = Array.isArray(systemsRaw) ? systemsRaw : [];
+
+// Section 4 — From the Field
+// Fetch published posts + all their performance snapshots, join in JS
+interface PerfSnapshot { impressions: number | null }
+interface PostRaw {
+  post_id: string;
+  content: string;
+  linkedin_url: string;
+  published_at: string | null;
+  linkedin_performance: PerfSnapshot[];
+}
+const postsRaw = await supabaseFetch(
+  "linkedin_posts?select=post_id,content,linkedin_url,published_at,linkedin_performance(impressions)&linkedin_url=not.is.null&status=in.(published,approved)"
+);
+const posts = (Array.isArray(postsRaw) ? (postsRaw as PostRaw[]) : [])
+  .map((p) => ({
+    post_id: p.post_id,
+    content: p.content,
+    linkedin_url: p.linkedin_url,
+    published_at: p.published_at,
+    peak_impressions: p.linkedin_performance.reduce(
+      (max, s) => Math.max(max, s.impressions ?? 0),
+      0
+    ),
+  }))
+  .sort((a, b) => b.peak_impressions - a.peak_impressions)
+  .slice(0, 3);
+
+// ── Static content (from brief) ─────────────────────────────────────────────
+const heroData = {
+  title: "Most AI conversations happen in decks. Mine happen in production.",
+  subtitle:
+    "I'm YY — COO of Laimi, building AI infrastructure for Asia's travel loyalty market. I run agent systems across multiple ventures and document what actually happens when AI meets real operations — not the theory, the friction.",
+  meta: "This site updates itself. Same system I build for others.",
+  cta: { label: "Let's talk", href: "https://yysng.me/card/yysng" },
+};
+
+const ctaData = {
+  heading: "Less AI theory. More AI in production.",
+  button: { label: "Let's talk", href: "https://yysng.me/card/yysng" },
+};
+
+// ── SEO ─────────────────────────────────────────────────────────────────────
+const seo = {
+  title: "YY Sng — AI Operator",
+  description:
+    "COO of Laimi. Building AI infrastructure for Asia's travel loyalty market. Agent systems in production across multiple ventures.",
+  canonical: "https://yysng.me/",
+  ogTitle: "Most AI conversations happen in decks. Mine happen in production.",
+  ogDescription:
+    "COO of Laimi. Building AI infrastructure for Asia's travel loyalty market. Agent systems in production across multiple ventures.",
+  ogType: "website",
+  ogImage: "https://yysng.me/images/yy/og-main.webp",
+  keywords:
+    "AI operator, AI infrastructure, travel loyalty, Laimi, agent systems, production AI",
+};
+
+const jsonLd = [
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "YY Sng",
-    "url": "https://yysng.me/",
-    "sameAs": ["https://www.linkedin.com/in/yysng/"],
+    name: "YY Sng",
+    url: "https://yysng.me/",
+    jobTitle: "COO",
+    worksFor: { "@type": "Organization", name: "Laimi" },
+    sameAs: ["https://www.linkedin.com/in/yanyuansng/"],
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "YY Sng",
-    "url": "https://yysng.me/",
-    "inLanguage": "en",
+    name: "YY Sng",
+    url: "https://yysng.me/",
+    inLanguage: "en",
   },
 ];
 ---
 
 <Base
-  title={homepageSEO.title}
-  description={homepageSEO.description}
-  canonical={homepageSEO.canonical}
-  ogTitle={homepageSEO.ogTitle}
-  ogDescription={homepageSEO.ogDescription}
-  ogType={homepageSEO.ogType}
-  ogImage={homepageSEO.ogImage}
-  keywords={homepageSEO.keywords}
-  jsonLd={homepageJsonLd}
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical}
+  ogTitle={seo.ogTitle}
+  ogDescription={seo.ogDescription}
+  ogType={seo.ogType}
+  ogImage={seo.ogImage}
+  keywords={seo.keywords}
+  jsonLd={jsonLd}
 >
   <main>
 
-     <!-- HERO -->
-    <Hero data={hero} />
+    <!-- 1. Hero -->
+    <Hero data={heroData} />
 
-    <!-- 2) EXECUTION SPINE — OPEN (Operator Fold peek via overlap; no extra background effects) -->
-    <section
-      id="execution-spine"
-      class="-mt-12 md:-mt-16 pt-20 md:pt-24 pb-12 md:pb-14"
-    >
-      <div class="container">
-        <div class="max-w-3xl">
-          <h2 data-reveal-item class="text-balance">
-            Most teams add AI to existing workflows.<br />
-          </h2>
+    <!-- 2. What I Build -->
+    <WhatIBuild systems={systems} />
 
-          <div class="mt-12 space-y-3 text-[20px] md:text-[22px] leading-snug text-[color:var(--muted)]">
-            <p>Work speeds up.</p>
-            <p>But decisions still bottleneck at the same places.</p>
-            <p>Junior staff execute faster.</p>
-            <p>Senior judgment doesn't scale.</p>
-          </div>
+    <!-- 3. Where I Operate -->
+    <WhereIOperate />
 
-          <p class="mt-12 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
-            Inside operating companies, the pattern is consistent:
-          </p>
+    <!-- 4. From the Field -->
+    <FromTheField posts={posts} />
 
-          <p class="mt-3 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
-            AI changes outcomes only when workflows change with it.
-          </p>
+    <!-- 5. CTA -->
+    <FinalCTA data={ctaData} />
 
-          <p class="mt-3 text-[18px] leading-relaxed text-[color:var(--muted)] max-w-[70ch]">
-            That's where I work.
-          </p>
-        </div>
-      </div>
-    </section>
-
- <!-- WHAT I BUILD — merged (no embeds, tight link rows) -->
-<section id="work" class="pt-14 md:pt-18 pb-20 md:pb-24">
-  <div class="container">
-
-    <!-- Header -->
-    <div class="max-w-3xl">
-      <p class="text-sm font-semibold tracking-wide text-[color:var(--muted)]">
-        What I Build
-      </p>
-
-      <h2 data-reveal-item class="mt-3 text-balance">
-        Real builds. Real operating decisions.
-      </h2>
-    </div>
-
-    <!-- Two blocks -->
-    <div class="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-0 items-start">
-
-      <!-- Block 1: AI-Ready Systems -->
-      <div class="lg:col-span-5 lg:pr-10">
-        <h3 class="text-[color:var(--ink)] leading-tight">
-          <span class="whitespace-nowrap">AI-Ready Systems</span>
-        </h3>
-
-        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[52ch]">
-          Websites and workflows designed to evolve with AI, not wait for redesigns.
-        </p>
-
-        <ul class="mt-7 space-y-2 text-sm">
-          <li>
-            <a
-              href="/case-studies/ezycoaching/"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>EzyCoaching — AI-ready website. Updates messaging in minutes, not redesign cycles.</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="https://client-colinmcc-site.seekingrowth.com/"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>Colin MCC — Personal website, AI-assisted. From idea to live in one session.</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="/card/yysng/"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>Operator Link — Linktree for leaders, not influencers. Create yours</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Divider -->
-      <div class="hidden lg:block lg:col-span-1">
-        <div class="h-full w-px bg-[color:var(--border)] mx-auto"></div>
-      </div>
-
-      <!-- Block 2: Live Operating Labs -->
-      <div class="lg:col-span-6 lg:pl-10">
-        <h3 class="text-[color:var(--ink)] leading-tight">
-          <span class="whitespace-nowrap">Live Operating Labs</span>
-        </h3>
-
-        <p class="mt-4 text-[16px] leading-relaxed text-[color:var(--muted)] max-w-[52ch]">
-          Real implementations inside Laimi (travel startup, Vietnam operations).
-        </p>
-
-        <!-- Tight link rows (no embeds) -->
-        <ul class="mt-7 space-y-2 text-sm">
-          <li>
-            <a
-              href="https://www.linkedin.com/posts/yanyuansng_ran-a-linkedin-content-system-on-chatgpt-activity-7431940958671294464-jSQv"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>ChatGPT plateau → Claude rebuild (2-month system stress test) →</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="https://www.linkedin.com/posts/yanyuansng_inside-my-ai-playbook-what-im-actually-activity-7418804394982514688-oK12"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>Inside my AI playbook: what I'm actually building →</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="https://www.linkedin.com/posts/yanyuansng_three-systems-same-ai-stack-same-blind-activity-7432212761679650817-AlsK"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>Three systems running. All producing. None learning. →</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-
-          <li class="pt-2">
-            <a
-              href="https://www.linkedin.com/in/yanyuansng/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 text-[color:var(--accent)] font-medium no-underline hover:no-underline hover:opacity-80 transition"
-            >
-              <span>More builds on LinkedIn</span>
-              <span aria-hidden="true">→</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-    <!-- 5) FINAL CTA — VERY OPEN (copy locked) -->
-    <FinalCTA data={cta} />
   </main>
 </Base>

@@ -5,32 +5,15 @@
 ================================ */
 @layer base {
   :root {
-    /* Color system */
-    --bg: #F7F9FC;
-    --surface: #FFFFFF;
-    --ink: #0B1220;
-    --muted: #4B5563;
-    --border: #E5E7EB;
-    --accent: #2F6BFF;
-    --accentSoft: #EAF1FF;
-
-    /* Type */
-    --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-headline: "Sora", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
     /* Layout rhythm */
     --container: 1120px;
     --section-py-desktop: 88px;
     --section-py-mobile: 64px;
 
-    /* UI */
+    /* Radius */
+    --radius-sm: 10px;
     --radius-md: 12px;
     --radius-lg: 16px;
-
-    /* Subtle, premium shadows */
-    --shadow-sm: 0 1px 2px rgba(11, 18, 32, 0.06), 0 6px 20px rgba(11, 18, 32, 0.06);
   }
 
   html { scroll-behavior: smooth; }
@@ -49,25 +32,29 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-headline);
     color: var(--ink);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
   }
 
   h1 {
-    font-weight: 650;
+    font-weight: 700;
     font-size: clamp(2.35rem, 4.8vw, 3.9rem);
     line-height: 1.04;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
   }
 
   h2 {
     font-weight: 650;
     font-size: clamp(1.75rem, 3.2vw, 2.55rem);
     line-height: 1.14;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
   }
 
   h3 {
-    font-weight: 620;
-    font-size: 1.25rem;
-    line-height: 1.25;
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 1.3;
     letter-spacing: -0.02em;
   }
 
@@ -84,12 +71,11 @@
 
   a:hover {
     text-decoration: underline;
-    text-decoration-color: var(--accent);
+    text-decoration-color: var(--brass);
   }
 
-  /* Accessible focus without noise */
   :focus-visible {
-    outline: 2px solid rgba(47, 107, 255, 0.45);
+    outline: 2px solid oklch(0.28 0.08 110 / 0.45);
     outline-offset: 3px;
     border-radius: 10px;
   }
@@ -124,6 +110,16 @@
     }
   }
 
+  /* Section eyebrow labels — mono, moss */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
   /* Standard split layout */
   .split { @apply grid grid-cols-1 lg:grid-cols-12 gap-12 items-start; }
   .split-text { @apply lg:col-span-5; }
@@ -133,47 +129,55 @@
   .visual-frame {
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: rgba(255,255,255,0.78);
+    background: var(--surface);
+    border: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
-    @apply ring-1 ring-[color:var(--border)];
   }
 
   .card {
     background: var(--surface);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    @apply ring-1 ring-[color:var(--border)];
+    border: 1px solid var(--border);
   }
 
-  /* Buttons aligned to funnel logic (primary + secondary) */
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Buttons */
   .btn-primary {
+    display: inline-block;
     background: var(--accent);
-    color: #FFFFFF;
+    color: oklch(1.000 0.000 0);
     border-radius: var(--radius-md);
-    padding: 0.85rem 1.3rem;
-    font-weight: 650;
-    box-shadow: var(--shadow-sm);
-    transition: transform 140ms ease, filter 140ms ease, box-shadow 180ms ease;
+    padding: 0.85rem 1.4rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    letter-spacing: 0.01em;
+    transition: background 160ms ease;
   }
 
   .btn-primary:hover {
-    filter: brightness(0.97);
-    transform: translateY(-1px);
+    background: oklch(0.22 0.07 110);
+    text-decoration: none;
   }
 
   .btn-secondary {
+    display: inline-block;
     background: transparent;
     color: var(--ink);
     border-radius: var(--radius-md);
-    padding: 0.85rem 1.3rem;
+    padding: 0.85rem 1.4rem;
     font-weight: 600;
-    transition: background 160ms ease, transform 140ms ease;
-    @apply ring-1 ring-[color:var(--border)];
+    font-family: var(--font-body);
+    border: 1px solid var(--border);
+    transition: background 160ms ease, border-color 160ms ease;
   }
 
   .btn-secondary:hover {
-    background: rgba(234, 241, 255, 0.7); /* accentSoft */
-    transform: translateY(-1px);
+    background: var(--accentSoft);
+    border-color: oklch(0.75 0.04 110);
+    text-decoration: none;
   }
 }
 
@@ -195,37 +199,10 @@
 }
 
 /* ===============================
-   AMBIENT BACKGROUND (OPERATOR BLUE DRIFT)
+   AMBIENT BACKGROUND — removed
 ================================ */
 @layer components {
-  .ambient-drift {
-    position: absolute;
-    inset: -22%;
-    pointer-events: none;
-    z-index: -1;
-
-    /* Calm, cool drift: accent + accentSoft + neutral ink haze */
-    background:
-      radial-gradient(44% 34% at 20% 22%, rgba(47, 107, 255, 0.14), transparent 62%),
-      radial-gradient(40% 30% at 78% 30%, rgba(234, 241, 255, 0.95), transparent 60%),
-      radial-gradient(36% 32% at 55% 82%, rgba(11, 18, 32, 0.06), transparent 70%);
-
-    filter: blur(34px);
-    opacity: 1;
-    transform: translate3d(0,0,0) scale(1);
-    animation: driftTransform 38s ease-in-out infinite;
-    will-change: transform;
-  }
-
-  @keyframes driftTransform {
-    0%   { transform: translate3d(-1.4%, -1.0%, 0) scale(1.02); }
-    50%  { transform: translate3d( 1.1%,  1.4%, 0) scale(1.05); }
-    100% { transform: translate3d(-1.4%, -1.0%, 0) scale(1.02); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ambient-drift { animation: none; }
-  }
+  .ambient-drift { display: none; }
 
   /* ---- Case Study UI Blocks ---- */
 
@@ -441,4 +418,84 @@
         border-color: color-mix(in oklab, var(--accent) 20%, var(--border));
       }
 
+}
+
+/* ===============================
+   PURPOSEFUL MOTION
+   All motion gated on no-preference.
+   Reduced-motion users get instant state; no invisible content.
+================================ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* ── Keyframes ────────────────────────────────────── */
+  @keyframes motion-fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Hero: load-triggered stagger ────────────────── */
+  [data-motion-hero] {
+    animation: motion-fade-up var(--motion-dur, 400ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--motion-delay, 0ms);
+  }
+
+  /* ── Scroll reveal: initial hidden state (JS adds .motion-ready) */
+  [data-motion-reveal].motion-ready {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity   420ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--motion-delay, 0ms);
+  }
+
+  [data-motion-reveal].motion-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Card hover: lift + shadow ────────────────────── */
+  .card {
+    transition:
+      box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform  200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* ── Button lift ─────────────────────────────────── */
+  .btn-primary,
+  .btn-secondary {
+    transition-property: background, border-color, transform;
+    transition-duration: 160ms, 160ms, 140ms;
+    transition-timing-function: ease, ease, cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+  }
+
+  /* ── Brass link underline grow ────────────────────── */
+  .link-brass {
+    position: relative;
+    text-decoration: none !important;
+  }
+
+  .link-brass::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--brass);
+    transition: width 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .link-brass:hover::after {
+    width: 100%;
+  }
 }

@@ -1,0 +1,82 @@
+---
+interface System {
+  name: string;
+  status: string;
+  public_description: string | null;
+}
+
+const { systems } = Astro.props as { systems: System[] };
+
+const badgeLabel = (status: string) => {
+  if (status === "needs_rework") return "rebuilding";
+  return status;
+};
+
+const badgeClass = (status: string) => {
+  if (status === "live") return "badge-live";
+  if (status === "building") return "badge-building";
+  return "badge-rebuilding";
+};
+---
+
+<section id="what-i-build" class="section">
+  <div class="container">
+    <p class="eyebrow">What I Build</p>
+    <h2 data-reveal-item class="mt-3 text-balance">
+      Agent systems. Running in production.
+    </h2>
+
+    <div
+      data-motion-group
+      data-motion-stagger="80"
+      class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+    >
+      {systems.map((system) => (
+        <div data-motion-reveal class="card p-6 flex flex-col gap-4">
+          <div class="flex items-start justify-between gap-3">
+            <h3 class="text-[color:var(--ink)] text-[1.05rem]">{system.name}</h3>
+            <span class={`badge ${badgeClass(system.status)}`}>
+              {badgeLabel(system.status)}
+            </span>
+          </div>
+          {system.public_description && (
+            <p class="text-[14.5px] leading-relaxed text-[color:var(--muted)] flex-1">
+              {system.public_description}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .badge-live {
+    background: oklch(0.96 0.03 145);
+    color: oklch(0.32 0.10 145);
+    border: 1px solid oklch(0.88 0.05 145);
+  }
+  .badge-building {
+    background: oklch(0.96 0.02 110);
+    color: var(--accent);
+    border: 1px solid oklch(0.85 0.04 110);
+  }
+  .badge-rebuilding {
+    background: oklch(0.97 0.03 70);
+    color: oklch(0.38 0.10 70);
+    border: 1px solid oklch(0.88 0.06 70);
+  }
+</style>

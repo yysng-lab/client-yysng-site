@@ -1,0 +1,36 @@
+# YY Sng
+
+> COO of Laimi. Building AI infrastructure for Asia's travel loyalty market. Agent systems in production across multiple ventures.
+
+Most AI conversations happen in decks. Mine happen in production.
+
+## About
+
+YY Sng is COO of Laimi, building AI infrastructure for Asia's travel loyalty market. He runs agent systems across multiple ventures and documents what actually happens when AI meets real operations — not the theory, the friction.
+
+This site updates itself. It is connected to a live data brain (Supabase + pgvector). Content changes happen by prompting an AI — no CMS, no manual editing, no redesign cycles.
+
+## Ventures
+
+- **Laimi** — AI-native travel infrastructure for Asia's loyalty economy
+- **EzyCoaching** — AI agent upskilling for teams and individuals
+- **Evergreen** — Personal brand sites that update themselves via AI
+
+## Systems Built
+
+- **AI OS Brain** — Personal AI brain built on Supabase with pgvector. Stores insights, priorities, and context across all ventures. Every Claude session loads from it.
+- **BD Research Agent** — Researches BD leads, classifies fit, and saves structured intel to Supabase automatically. Powers Laimi partner outreach.
+- **Personal Content OS** — The system behind LinkedIn content. Tracks post performance, runs weekly learning reviews, and generates new posts grounded in what actually worked.
+- **Laimi SEO Agent** — AI agent built by the Laimi Vietnam team to research, write, and optimise SEO content at scale — replacing a manual production process.
+- **Evergreen** — A system that keeps personal brand websites alive by connecting them to a live data brain. Update your site by prompting an AI.
+
+## Pages
+
+- [Home](https://yysng.me/): Overview of work, systems, and operating context
+- [Contact / vCard](https://yysng.me/card/yysng): Connect with YY Sng
+- [Case Studies](https://yysng.me/case-studies/ezycoaching/): Real AI implementation case studies
+
+## Contact
+
+Connect at https://yysng.me/card/yysng
+LinkedIn: https://www.linkedin.com/in/yanyuansng/

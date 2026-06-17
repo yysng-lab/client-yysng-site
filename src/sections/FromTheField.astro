@@ -1,0 +1,49 @@
+---
+interface Post {
+  post_id: string;
+  content: string;
+  linkedin_url: string;
+  published_at: string | null;
+  peak_impressions: number;
+}
+
+const { posts } = Astro.props as { posts: Post[] };
+
+const excerpt = (text: string, max = 150) =>
+  text.length <= max ? text : text.slice(0, max).trimEnd() + "…";
+---
+
+{posts.length > 0 && (
+  <section id="from-the-field" class="section border-t border-[color:var(--border)]">
+    <div class="container">
+      <p class="eyebrow">From the field</p>
+      <h2 data-reveal-item class="mt-3 text-balance">
+        What actually happens when AI meets operations.
+      </h2>
+
+      <div
+        data-motion-group
+        data-motion-stagger="100"
+        class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+      >
+        {posts.map((post) => (
+          <a
+            data-motion-reveal
+            href={post.linkedin_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card p-6 flex flex-col gap-4 no-underline hover:no-underline group"
+          >
+            <p class="text-[15px] leading-relaxed text-[color:var(--muted)] flex-1">
+              {excerpt(post.content)}
+            </p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-[color:var(--brass)] group-hover:opacity-75 transition-opacity">
+              Read on LinkedIn
+              <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

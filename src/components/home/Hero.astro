@@ -19,13 +19,16 @@ const renderText = (v = "") =>
         <!-- LEFT (60%) -->
         <div class="lg:col-span-7">
           <h1
-            data-reveal-item
+            data-motion-hero
+            style="--motion-delay: 0ms; --motion-dur: 420ms;"
             class="text-balance"
             set:html={renderText(data.title)}
           ></h1>
 
           {data.subtitle && (
             <p
+              data-motion-hero
+              style="--motion-delay: 130ms; --motion-dur: 400ms;"
               class="mt-7 text-[18px] md:text-[19px] leading-relaxed max-w-[58ch] text-[color:var(--muted)]"
               set:html={renderText(data.subtitle)}
             ></p>
@@ -33,7 +36,11 @@ const renderText = (v = "") =>
 
           {/* ONE CTA only (schema locked) */}
           {data.cta?.href && data.cta?.label && (
-            <div class="mt-10">
+            <div
+              data-motion-hero
+              style="--motion-delay: 260ms; --motion-dur: 380ms;"
+              class="mt-10"
+            >
               <a
                 href={data.cta.href}
                 class="btn-primary no-underline hover:no-underline"

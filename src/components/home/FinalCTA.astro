@@ -11,10 +11,14 @@ const renderText = (v = "") =>
 
 <section class="py-28 md:py-36">
   <div class="container">
-    <div class="max-w-3xl">
+    <div
+      data-motion-group
+      data-motion-stagger="120"
+      class="max-w-3xl"
+    >
 
       <h2
-        data-reveal-item
+        data-motion-reveal
         class="text-balance text-[color:var(--ink)]"
         set:html={renderText(data.heading)}
       ></h2>
@@ -27,7 +31,7 @@ const renderText = (v = "") =>
       )}
 
       {data.button?.href && data.button?.label && (
-        <div class="mt-14">
+        <div data-motion-reveal class="mt-14">
           <a
             href={data.button.href}
             class="btn-primary no-underline hover:no-underline"

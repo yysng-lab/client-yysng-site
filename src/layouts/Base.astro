@@ -30,11 +30,11 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
 
-    <!-- Fonts: LOCKED (Sora headlines, Inter body/UI) -->
+    <!-- Fonts: Sora headlines, IBM Plex Sans body, IBM Plex Mono labels -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650&family=Sora:wght@500;600;650;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600;650;700&display=swap"
       rel="stylesheet"
     />
 
@@ -65,13 +65,6 @@ const {
   </head>
 
   <body class="min-h-screen relative">
-   <!-- ambient drift (global background) -->
-    {!noChrome && (
-      <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div class="ambient-drift"></div>
-      </div>
-    )}
-
     <!-- global header -->
    {!noChrome && <Header />}
 
@@ -95,29 +88,64 @@ const {
   <script is:inline>
     (() => {
       const run = () => {
-        const els = Array.from(document.querySelectorAll("[data-reveal-item]"));
-        if (els.length === 0) return;
-
-        els.forEach(el => el.classList.add("reveal"));
-
         if (!("IntersectionObserver" in window)) {
-          els.forEach(el => el.classList.add("is-visible"));
+          // Fallback: reveal everything immediately
+          document.querySelectorAll("[data-reveal-item]").forEach(el => {
+            el.classList.add("reveal", "is-visible");
+          });
+          document.querySelectorAll("[data-motion-reveal]").forEach(el => {
+            el.classList.add("motion-visible");
+          });
           return;
         }
 
-        const io = new IntersectionObserver((entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add("is-visible");
-              io.unobserve(e.target);
+        // ── Legacy header reveals (case studies, etc.) ──────────────────
+        const legacyEls = Array.from(document.querySelectorAll("[data-reveal-item]"));
+        if (legacyEls.length > 0) {
+          legacyEls.forEach(el => el.classList.add("reveal"));
+          const legacyIo = new IntersectionObserver((entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-visible");
+                legacyIo.unobserve(e.target);
+              }
             }
-          }
-        }, {
-          threshold: 0.2,
-          rootMargin: "0px 0px -10% 0px",
+          }, { threshold: 0.2, rootMargin: "0px 0px -10% 0px" });
+          legacyEls.forEach(el => legacyIo.observe(el));
+        }
+
+        // ── Staggered scroll reveals ────────────────────────────────────
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const motionEls = Array.from(document.querySelectorAll("[data-motion-reveal]"));
+        if (motionEls.length === 0) return;
+
+        if (reduced) {
+          // Reduced motion: content stays visible, skip hiding
+          return;
+        }
+
+        // Assign stagger delays from parent data-motion-group
+        document.querySelectorAll("[data-motion-group]").forEach(group => {
+          const stagger = parseInt(group.dataset.motionStagger || "80", 10);
+          Array.from(group.querySelectorAll("[data-motion-reveal]")).forEach((el, i) => {
+            el.style.setProperty("--motion-delay", i * stagger + "ms");
+          });
         });
 
-        els.forEach(el => io.observe(el));
+        // Set initial hidden state (JS guard — content visible before this runs)
+        motionEls.forEach(el => el.classList.add("motion-ready"));
+
+        const motionIo = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("motion-visible");
+              motionIo.unobserve(e.target);
+            }
+          }
+        }, { threshold: 0.08, rootMargin: "0px 0px -4% 0px" });
+
+        motionEls.forEach(el => motionIo.observe(el));
       };
 
       if (document.readyState === "loading") {

@@ -1,0 +1,55 @@
+---
+const ventures = [
+  {
+    name: "Laimi",
+    description: "AI-native travel infrastructure for Asia's loyalty economy",
+    href: "https://www.laimi.com",
+  },
+  {
+    name: "EzyCoaching",
+    description: "AI agent upskilling for teams and individuals",
+    href: "https://www.ezycoaching.com",
+  },
+  {
+    name: "Evergreen",
+    description: "Personal brand sites that update themselves via AI",
+    href: null,
+  },
+];
+---
+
+<section id="where-i-operate" class="section border-t border-[color:var(--border)]">
+  <div class="container">
+    <p class="eyebrow">Where I Operate</p>
+    <h2 data-reveal-item class="mt-3 text-balance">
+      Three ventures. One operating system.
+    </h2>
+
+    <ul
+      data-motion-group
+      data-motion-stagger="80"
+      class="mt-12 space-y-5"
+    >
+      {ventures.map((v) => (
+        <li
+          data-motion-reveal
+          class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 border-b border-[color:var(--border)] pb-5 last:border-0 last:pb-0"
+        >
+          {v.href ? (
+            <a
+              href={v.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="link-brass font-semibold text-[color:var(--brass)] min-w-[120px]"
+            >
+              {v.name} →
+            </a>
+          ) : (
+            <span class="font-semibold text-[color:var(--ink)] min-w-[120px]">{v.name}</span>
+          )}
+          <span class="text-[color:var(--muted)]">{v.description}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
